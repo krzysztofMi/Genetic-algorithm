@@ -1,4 +1,5 @@
-import Genetic from './src/Genetic';
+import GeneticAlgorithm from "../genetic/GeneticAlgorithm";
+import Genetic from "../genetic/GeneticAlgorithm"
 
-var genetic = new Genetic(0, 5, 1);
+var genetic = new GeneticAlgorithm(0, 5, 1, 10, 2);
 
