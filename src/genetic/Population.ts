@@ -1,33 +1,37 @@
-import Chromosome from "./Chromosome"
+import Chromosome from "./chromosome/Chromosome"
 import { getRandomBitVector } from "../utils/bits"
 import Interval from "./Interval"
+import ExtremeType from "../enum/ExtremeType"
+import BaseChromosome from "./chromosome/BaseChromosome"
+import BinaryChromosome from "./chromosome/BinaryChromosome"
+import RealChromosome from "./chromosome/RealChromosome"
+
 
 export default class Population {
 
-    individuals: Chromosome[] = []
-    decodedIndividuals: Chromosome[] = []
+    individuals:  BinaryChromosome[] = []
+    decodedIndividuals: RealChromosome[] = []
     //It's not chromosome because it's only has one value
     evaluatedIndividuals: number[] = []
     bestIndividual: Chromosome
     interval: Interval
+    extremeType: ExtremeType
 
     constructor(
         individualNumber: number,
         geneNumber: number, 
-        interval: Interval
+        interval: Interval,
+        extremeType: ExtremeType
         ) {
             this.interval = interval
+            this.extremeType = extremeType
             this.genearetePopulation(individualNumber, geneNumber, interval.getBits())
-            this.decodePopulation()
-            //Pass function as constr argument and make it field
-            this.evaluatePopulation((it)=>{return it[0]*it[1]})
-            this.setBestIndividual()
     }
 
-    private genearetePopulation(individualNumber: number, geneNumber: number, bitsNumber: number) {
+    public genearetePopulation(individualNumber: number, geneNumber: number, bitsNumber: number) {
         for(let i = 0; i<individualNumber; i++) {
             let bits: number[] = getRandomBitVector(geneNumber, bitsNumber);
-            this.individuals.push(new Chromosome(geneNumber, bits))
+            this.individuals.push(new BinaryChromosome(geneNumber, bits))
         }
     }
 
@@ -35,26 +39,39 @@ export default class Population {
     public getIndividuals() { return this.individuals }
     public getDecodedIndividuals() { return this.decodedIndividuals }
     public getEvaluatedIndividuals() { return this.evaluatedIndividuals }
+    public getBestIndividual() { return this.bestIndividual }
 
     public decodePopulation() {
         this.decodedIndividuals = this.individuals.map((it)=>{
-           return new Chromosome(
+           return new RealChromosome(
                it.getGeneNumbers(),
-            it.decode(this.interval.getA(), this.interval.getStep()))
+            it.decode(this.interval))
         })
     }
 
-    //not tested
-    public evaluatePopulation(fun: Function) {
-        this.evaluatedIndividuals = this.decodedIndividuals
-            .map(it=>
-                fun(it.getAllels()
-                    .map(val=>val))
-        )
+    public evaluateAndSetBest(fun: Function) {
+        this.evaluatePopulation(fun)
+        this.setBestIndividual()
     }
 
-    //not tested not implemented
+    private evaluatePopulation(fun: Function) {
+        this.evaluatedIndividuals = this.decodedIndividuals
+            .map( it=> it.evaluate(fun) )
+    }
+
     private setBestIndividual() {
-       
+        let indexOfBest = this.extremeType === ExtremeType.MAX 
+                ? this.getMaximumIndex() : this.getMinimumIndex()
+        this.bestIndividual = this.decodedIndividuals[indexOfBest] 
+    }
+
+    private getMaximumIndex(): number {
+        return this.evaluatedIndividuals
+                .reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+    }
+
+    private getMinimumIndex() {
+        return this.evaluatedIndividuals
+                .reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0);    
     }
 }

@@ -1,5 +1,6 @@
 import Population from "./Population"
 import Interval from "./Interval"
+import ExtremeType from "../enum/ExtremeType"
 
 
 export default class GeneticAlgorithm {
@@ -15,6 +16,11 @@ export default class GeneticAlgorithm {
         variableNumber: number,
     ) {
         this.interval = new Interval(a, b, dx)
-        this.population = new Population(populationSize, variableNumber, this.interval)
+        this.population = new Population(
+            populationSize,
+            variableNumber, 
+            this.interval, 
+            ExtremeType.MIN)
+
     }
 }
