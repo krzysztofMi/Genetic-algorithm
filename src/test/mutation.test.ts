@@ -8,7 +8,6 @@ import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 import OnePointFlip from "../genetic/mutation/OnePointFlip"
 import Inversion from "../genetic/mutation/Inversion"
 
-
 test("Check if probability value is checked", ()=> {
     let fcn = function(){new BoundaryFlip(10)};
     expect(fcn).toThrow(ProbabilityError)
