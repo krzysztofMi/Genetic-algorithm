@@ -2,11 +2,8 @@ import { getRandomInt } from "../../utils/random";
 import Chromosome from "../chromosome/Chromosome";
 import BitFlipMutation from "./BitFilpMutation";
 
-
 export default class BoundaryFlip extends BitFlipMutation {
     
-
-
     mutate(chromosome: Chromosome) {
         if(!this.isMutate()) {
             return
