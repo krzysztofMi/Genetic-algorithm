@@ -3,10 +3,9 @@ import BinaryChromosome from "../genetic/chromosome/BinaryChromosome"
 import Chromosome from "../genetic/chromosome/Chromosome"
 import BitFlipMutation from "../genetic/mutation/BitFilpMutation"
 import BoundaryFlip from "../genetic/mutation/BoundaryFlipBit"
-import BorderFlip from "../genetic/mutation/BoundaryFlipBit"
 import Mutation from "../genetic/mutation/Mutation"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
-import UniformFlip from "../genetic/mutation/UniformFlip"
+import OnePointFlip from "../genetic/mutation/OnePointFlip"
 
 
 test("Check if probability value is checked", ()=> {
@@ -57,8 +56,8 @@ test("Boundary mutation test", () => {
     }
 })
 
-test("Uniform mutation test", () => {
-    let mut: Mutation = new UniformFlip(1);
+test("One point mutation test", () => {
+    let mut: Mutation = new OnePointFlip(1);
     let chromosome: Chromosome = new BinaryChromosome(2, [0, 0, 0, 0, 0, 0])
     testChromosomeAllelsSum(chromosome, 0)
     mut.mutate(chromosome)
@@ -92,7 +91,7 @@ test("Low probability test", ()=> {
     mut.mutate(chromosome)
     testChromosomeAllelsSum(chromosome, 0)
 
-    mut = new UniformFlip(0);
+    mut = new OnePointFlip(0);
     chromosome = new BinaryChromosome(2, [1, 0, 0, 1, 0, 1])
     testChromosomeAllelsSum(chromosome, 3)
     mut.mutate(chromosome)
