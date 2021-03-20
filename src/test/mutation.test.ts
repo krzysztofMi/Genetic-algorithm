@@ -6,6 +6,7 @@ import BoundaryFlip from "../genetic/mutation/BoundaryFlipBit"
 import Mutation from "../genetic/mutation/Mutation"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 import OnePointFlip from "../genetic/mutation/OnePointFlip"
+import Inversion from "../genetic/mutation/Inversion"
 
 
 test("Check if probability value is checked", ()=> {
@@ -102,6 +103,14 @@ test("Low probability test", ()=> {
     testChromosomeAllelsSum(chromosome, 2)
     mut.mutate(chromosome)
     testChromosomeAllelsSum(chromosome, 2)
+})
+
+test("inversion operator test", () => {
+    //Tested manually
+    // let mut: Mutation = new Inversion(1);
+    // let chromosome = new BinaryChromosome(2, [1, 1, 0, 0, 1, 0, 1, 0, 0, 1])
+    // mut.mutate(chromosome)
+    // console.log(chromosome.getAllels())
 })
 
 function getArraySum(array: number[]) {
