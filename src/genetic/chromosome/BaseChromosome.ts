@@ -12,6 +12,8 @@ export default abstract class BaseChromosome implements Chromosome {
     }
 
     public getAllels() { return this.allels }
+    public setAllels(allels: number[]) {this.allels = allels}
+
     public getGeneNumbers() { return this.geneNumber }
 
     abstract decode(interval: Interval): number[]

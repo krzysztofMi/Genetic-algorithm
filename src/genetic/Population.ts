@@ -2,7 +2,6 @@ import Chromosome from "./chromosome/Chromosome"
 import { getRandomBitVector } from "../utils/bits"
 import Interval from "./Interval"
 import ExtremeType from "../enum/ExtremeType"
-import BaseChromosome from "./chromosome/BaseChromosome"
 import BinaryChromosome from "./chromosome/BinaryChromosome"
 import RealChromosome from "./chromosome/RealChromosome"
 
