@@ -1,7 +1,7 @@
 import ExtremeType from "../../enum/ExtremeType";
 import Selection from "./Selection"
 
-export default class RouletteWhell implements Selection {
+export default class RouletteWheel implements Selection {
 
 
     private extreme: ExtremeType
