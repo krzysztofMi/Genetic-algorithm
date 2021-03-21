@@ -1,12 +1,7 @@
 import { getRandomInt } from "../utils/random"
 
 function crossover1(a: number[], b: number[], crossoverIndex: number) {
-    let geneLength = a.length
-    if(a.length != b.length) {
-        geneLength = Math.min(a.length, b.length)
-        console.log("Genes are not of equal length")
-    } 
-
+    let geneLength = Math.min(a.length, b.length)
     for(let i = crossoverIndex; i < geneLength; i++) {
         let temp = a[i]
         a[i] = b[i]
@@ -14,10 +9,8 @@ function crossover1(a: number[], b: number[], crossoverIndex: number) {
     }
 }
 
-function crossover2(a: number[], b: number[], 
-                    crossoverIndexMin: number, 
-                    crossoverIndexMax: number) {
-    for(let i = crossoverIndexMin; i < crossoverIndexMax; i++) {
+function crossover2(a: number[], b: number[], minIndex: number, maxIndex: number) {
+    for(let i = minIndex; i < maxIndex; i++) {
         let temp = a[i]
         a[i] = b[i]
         b[i] = temp
@@ -25,12 +18,14 @@ function crossover2(a: number[], b: number[],
 }
 
 function onePointCrossover(binaryA: number[], binaryB: number[]) {
-    let randomIndex = getRandomInt(0, binaryA.length - 1)
+    let minIndex = Math.min(binaryA.length, binaryB.length)
+    let randomIndex = getRandomInt(0, minIndex - 1)
     crossover1(binaryA, binaryB, randomIndex)
 }
 
 function twoPointCrossover(binaryA: number[], binaryB: number[]) {
-    let randomIndices = [getRandomInt(0, binaryA.length - 1), getRandomInt(0, binaryA.length - 1)]
+    let minIndex = Math.min(binaryA.length, binaryB.length)
+    let randomIndices = [getRandomInt(0, minIndex - 1), getRandomInt(0, minIndex - 1)]
     let min: number = Math.min(randomIndices[0], randomIndices[1])
     let max: number = Math.max(randomIndices[0], randomIndices[1])
     crossover2(binaryA, binaryB, min, max)
