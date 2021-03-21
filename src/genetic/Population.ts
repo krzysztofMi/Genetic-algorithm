@@ -24,10 +24,10 @@ export default class Population {
         ) {
             this.interval = interval
             this.extremeType = extremeType
-            this.genearetePopulation(individualNumber, geneNumber, interval.getBits())
+            this.generatePopulation(individualNumber, geneNumber, interval.getBits())
     }
 
-    public genearetePopulation(individualNumber: number, geneNumber: number, bitsNumber: number) {
+    public generatePopulation(individualNumber: number, geneNumber: number, bitsNumber: number) {
         for(let i = 0; i<individualNumber; i++) {
             let bits: number[] = getRandomBitVector(geneNumber, bitsNumber);
             this.individuals.push(new BinaryChromosome(geneNumber, bits))
