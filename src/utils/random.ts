@@ -18,3 +18,10 @@ export function getRandomIndexs(n: number) {
 
     return randomIndexs
 }
+
+export function randomIndexes(maxIndex: number, count: number) {
+    let randomIndices = []
+    for(let i = 0; i < count; i++) 
+        randomIndices.push(getRandomInt(0, maxIndex))
+    return randomIndices
+}
