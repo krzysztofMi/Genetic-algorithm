@@ -1,6 +1,15 @@
 import { getRandomInt, randomIndexes } from "../utils/random"
 import * as c from "../genetic/Crossover"
 
+test("Test homogenous crossover", ()=> {
+    let A = [1,1,0,1,1,0,0,1]
+    let B = [0,1,0,1,1,1,1,1]
+    c.crossoverHomogenous(A,B)
+    expect(A).toEqual([1,1,0,1,1,1,0,1])
+    expect(B).toEqual([0,1,0,1,1,0,1,1])
+})
+
+
 test("Test N point crossover", ()=> {
     let A = [1,1,0,1,1,0,0,1]
     let B = [0,1,0,1,1,1,1,1]

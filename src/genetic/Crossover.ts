@@ -1,5 +1,15 @@
 import { getRandomInt, randomIndexes } from "../utils/random"
 
+export function crossoverHomogenous(A: number[], B: number[]) {
+    for(let i = 0; i < Math.min(A.length, B.length) - 1; i++) {
+        if(i % 2) {
+            let temp = A[i]
+            A[i] = B[i]
+            B[i] = temp
+        }        
+    }
+}
+
 export function crossover(a: number[], b: number[], crossoverIndex: number): void {
     let geneLength = Math.min(a.length, b.length)
     for(let i = crossoverIndex; i < geneLength; i++) {
