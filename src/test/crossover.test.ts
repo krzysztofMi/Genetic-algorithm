@@ -1,37 +1,5 @@
 import { getRandomInt, randomIndexes } from "../utils/random"
-
-function crossover(a: number[], b: number[], crossoverIndex: number): void {
-    let geneLength = Math.min(a.length, b.length)
-    for(let i = crossoverIndex; i < geneLength; i++) {
-        let temp = a[i]
-        a[i] = b[i]
-        b[i] = temp
-    }
-}
-
-function crossoverN(a: number[], b: number[], points: number[]) {
-    for(let i = 0; i < points.length; i++) {
-        crossover(a,b,points[i])
-    }
-}
-
-function crossover1(binaryA: number[], binaryB: number[]): number {
-    let randomIndex = getRandomInt(0, Math.min(binaryA.length, binaryB.length) - 1)
-    crossover(binaryA, binaryB, randomIndex)
-    return randomIndex
-}
-
-function crossover2(binaryA: number[], binaryB: number[]): number[] {
-    let indices = randomIndexes(Math.min(binaryA.length, binaryB.length) - 1, 2)
-    crossoverN(binaryA, binaryB, indices)
-    return indices
-}
-
-function crossover3(binaryA: number[], binaryB: number[]): number[] {
-    let indices = randomIndexes(Math.min(binaryA.length, binaryB.length) - 1, binaryA.length)
-    crossoverN(binaryA,binaryB,indices)
-    return indices
-}
+import * as c from "../genetic/Crossover"
 
 test("Test N point crossover", ()=> {
     let A = [1,1,0,1,1,0,0,1]
@@ -44,7 +12,7 @@ test("Test N point crossover", ()=> {
 
     // 11011011
     // 01011101
-    crossoverN(A, B, [6,5,4])
+    c.crossoverN(A, B, [6,5,4])
     expect(A).toEqual([1,1,0,1,1,0,1,1])
     expect(B).toEqual([0,1,0,1,1,1,0,1])
 
@@ -57,7 +25,7 @@ test("Test N point crossover", ()=> {
 test("Test single point crossover", ()=> {
     let A = [1,1,0,1,1,0,0,1]
     let B = [0,1,0,1,1,1,1,1]
-    crossover(A, B, 3)
+    c.crossover(A, B, 3)
     expect(A).toEqual([1,1,0,1,1,1,1,1])
     expect(B).toEqual([0,1,0,1,1,0,0,1])
 })
@@ -65,10 +33,10 @@ test("Test single point crossover", ()=> {
 test("Test random crossover", ()=> {
     let A = [1,1,0,1,1,0,0,1]
     let B = [0,1,0,1,1,1,1,1]
-    let index = crossover1(A, B)
+    let index = c.crossover1(A, B)
     expect(index >= 0 && index < A.length).toBeTruthy()
     
-    let index_2 = crossover2(A, B)
+    let index_2 = c.crossover2(A, B)
     for(let i = 0; i < 2; i++)
         expect(index_2[i] >= 0 && index_2[i] < A.length).toBeTruthy()
 })
@@ -76,7 +44,7 @@ test("Test random crossover", ()=> {
 test("Test two point crossover", ()=> {
     let A = [1,1,0,1,0,0,0,1]
     let B = [0,1,0,1,1,1,1,1]
-    crossoverN(A, B, [3, 5])
+    c.crossoverN(A, B, [3, 5])
     expect(A).toEqual([1,1,0,1,1,0,0,1])
     expect(B).toEqual([0,1,0,1,0,1,1,1])
 })
