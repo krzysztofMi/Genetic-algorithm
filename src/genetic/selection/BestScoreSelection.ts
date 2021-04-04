@@ -4,17 +4,17 @@ import Selection from "./Selection"
 export default class BestScoreSelection implements Selection {
     private extreme: ExtremeType
     private out_fraction: number
-    setExtremeType(extreme: ExtremeType){ this.extreme = extreme }
-    constructor(out_percentage: number, extreme: ExtremeType){ 
+    setExtremeType(extreme: ExtremeType) { this.extreme = extreme }
+    constructor(out_percentage: number, extreme: ExtremeType) { 
         this.extreme = extreme
         this.out_fraction = out_percentage / 100.0
 
-        if(this.out_fraction > 1.0){
+        if(this.out_fraction > 1.0) {
             this.out_fraction = 1.0
             console.log("Warning: percentage > 100")
         }
 
-        if(this.out_fraction < 0.0){
+        if(this.out_fraction < 0.0) {
             this.out_fraction = 0.0
             console.log("Warning: percentage < 0")
         }
@@ -22,7 +22,7 @@ export default class BestScoreSelection implements Selection {
 
     selectBest(evaluatedIndividuals: number[]): number[] {
         let copy = evaluatedIndividuals.slice()
-        if(this.extreme == ExtremeType.MAX){
+        if(this.extreme == ExtremeType.MAX) {
             copy.sort((a,b) => b - a)
         } else {
             copy.sort((a,b) => a - b)
@@ -30,7 +30,7 @@ export default class BestScoreSelection implements Selection {
 
         let result = []
         let output_count = Math.round(copy.length * this.out_fraction)
-        for(let i = 0; i < output_count; i++){
+        for(let i = 0; i < output_count; i++) {
             result.push(copy[i])
         }
 

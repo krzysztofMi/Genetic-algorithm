@@ -53,7 +53,7 @@ export default class Population {
         this.setBestIndividual()
     }
 
-    private evaluatePopulation(fun: Function) {
+    public evaluatePopulation(fun: Function) {
         this.evaluatedIndividuals = this.decodedIndividuals
             .map( it=> it.evaluate(fun) )
     }
