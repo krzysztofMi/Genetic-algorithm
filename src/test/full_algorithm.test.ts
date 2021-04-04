@@ -100,6 +100,8 @@ Loop{
     // interval encodes the range of possible values and the step from one value to next
     // ExtremeType communicates whether... well I'm not sure
     let population = new Population(10, 2, interval, ExtremeType.MIN)
+
+
     population.decodePopulation()
     population.evaluateAndSetBest((it)=>it[0]*it[1])
     // console.log(population.evaluatedIndividuals)
@@ -110,6 +112,8 @@ Loop{
     //             it.decode(this.interval))
     // console.log(population.individuals[2])
     // console.log(population.individuals[2].decode(interval))
+
+    // TODO: Tournament selection - zeby dzialalo parzyste albo nie parzyste i powiedziec krzysiowi
     let selection: BestScoreSelection = new BestScoreSelection(40, ExtremeType.MIN) 
     let bests = selection.selectBest(population.evaluatedIndividuals)
     
@@ -123,38 +127,39 @@ Loop{
     console.log("Binary of best:", bestBinaryChromosomes)
     // console.log(bestRealChromosomes)
 
-    let chromosomes = []
-    for(let i = 0; i < bestBinaryChromosomes.length; i++) {
-        let allels = bestBinaryChromosomes[i].getAllels()
-        let binaryA = [allels[0], allels[1], allels[2]]
-        let binaryB = [allels[3], allels[4], allels[5]]
-        c.crossover2(binaryA, binaryB)
-        chromosomes.push([binaryA, binaryB])
-    }
-    console.log("Binary after crossover:", chromosomes)
+    // TODO:  2 Chromosomy krzyżujemy !!!! nie geny xD
+    // let chromosomes = []
+    // for(let i = 0; i < bestBinaryChromosomes.length; i++) {
+    //     let allels = bestBinaryChromosomes[i].getAllels()
+    //     let binaryA = [allels[0], allels[1], allels[2]]
+    //     let binaryB = [allels[3], allels[4], allels[5]]
+    //     c.crossover2(binaryA, binaryB)
+    //     chromosomes.push([binaryA, binaryB])
+    // }
+    // console.log("Binary after crossover:", chromosomes)
     
     
-    let newChromosomes = []
+    // let newChromosomes = []
     
-    for(let i = 0; i < chromosomes.length; i++) {
-        let currentChromosome = chromosomes[i]
-        let combine = []
-        for(let j = 0; j < currentChromosome.length; j++) {
-            combine = combine.concat(currentChromosome[j])
-        }
+    // for(let i = 0; i < chromosomes.length; i++) {
+    //     let currentChromosome = chromosomes[i]
+    //     let combine = []
+    //     for(let j = 0; j < currentChromosome.length; j++) {
+    //         combine = combine.concat(currentChromosome[j])
+    //     }
 
-        let new_ = new BinaryChromosome(currentChromosome.length, combine)
-        newChromosomes.push(new_)
-    }
+    //     let instance = new BinaryChromosome(currentChromosome.length, combine)
+    //     newChromosomes.push(instance)
+    // }
 
     // Two point flip sometimes (25% of the time in this case) inverts two bits in a binary sequence
-    console.log("Crossover chromosomes: ", newChromosomes)
-    let mutation = new TwoPointFlip(0.25)
-    for(let i = 0;i < newChromosomes.length; i++) {
-        mutation.mutate(newChromosomes[i])
-    }
+    // console.log("Crossover chromosomes: ", newChromosomes)
+    // let mutation = new TwoPointFlip(0.25)
+    // for(let i = 0;i < newChromosomes.length; i++) {
+    //     mutation.mutate(newChromosomes[i])
+    // }
 
-    console.log("Chromosomes after mutation: ", newChromosomes)
+    // console.log("Chromosomes after mutation: ", newChromosomes)
     
 
 
