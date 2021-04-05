@@ -4,6 +4,17 @@ import BestScoreSelection from "../genetic/selection/BestScoreSelection"
 import * as c from "../genetic/Crossover"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 
+let form = document.getElementById("genetic-form")
+if(form == undefined) {
+    console.log("Form is undefined")
+} else {
+    form.addEventListener("onsubmit", function(event){
+        event.preventDefault()
+        console.log("Form submit!")
+    })
+}
+
+
 let genetic = new GeneticAlgorithm(
     /*a*/ 1,
     /*b*/ 5,
