@@ -7,7 +7,7 @@ export default class TournamentSelection implements Selection {
     private k: number
     private extreme: ExtremeType
 
-    constructor(k: number, extremeType: ExtremeType) {
+    constructor(extremeType: ExtremeType, k: number) {
         this.k  = k
         this.extreme = extremeType
     }

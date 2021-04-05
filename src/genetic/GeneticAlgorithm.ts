@@ -56,7 +56,8 @@ export default class GeneticAlgorithm {
             variableCount, 
             this.interval, 
             ExtremeType.MIN)
-        this.selection = new selectionMethod(selectionMethodArg, minimize)
+
+        this.selection = new selectionMethod(minimize, selectionMethodArg)
         this.mutation = new mutationMethod(inversionProbability)
         this.crossover = crossoverMethod
         
@@ -101,17 +102,12 @@ export default class GeneticAlgorithm {
                 offspring.push(new BinaryChromosome(this.variableCount, children[1]))
             }
 
-            console.log("Offspring: ", offspring)
-            
-            
-            // Two point flip sometimes (25% of the time in this case) inverts two bits in a binary sequence
             for(let i = 0;i < offspring.length; i++) {
                 if(this.mutationProbability < Math.random()) {
                     this.mutation.mutate(offspring[i])
                 }
             }
 
-            console.log("Offspring after mutation: ", offspring)
             let newPopulation = offspring.concat(bestBinaryChromosomes)
             console.log("New population: ", newPopulation)
 

@@ -5,7 +5,7 @@ export default class BestScoreSelection implements Selection {
     private extreme: ExtremeType
     private out_fraction: number
     setExtremeType(extreme: ExtremeType) { this.extreme = extreme }
-    constructor(out_fraction: number, extreme: ExtremeType) { 
+    constructor(extreme: ExtremeType, out_fraction: number) { 
         this.extreme = extreme
         this.out_fraction = out_fraction
 

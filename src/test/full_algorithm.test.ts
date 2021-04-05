@@ -23,7 +23,7 @@ test("Full algorithm", () => {
         /*epochCount*/ 10,
         /*function*/ (it)=>it[0]*it[1],
         /*selectionMethod*/ BestScoreSelection,
-        /*selectionMethodArg*/ 0.4, // BestScorePercentage, Tournament thing
+        /*selectionMethodArg*/ 0.4, // BestScore Fraction, Tournament selection parameter
         /*crossoverMethod*/ c.crossover1,
         /*mutationMethod*/ TwoPointFlip,
         /*eliteStrategyCount*/ 2,
