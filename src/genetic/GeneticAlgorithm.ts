@@ -48,7 +48,6 @@ export default class GeneticAlgorithm {
         mutationProbability: number,
         inversionProbability: number,
         minimize: ExtremeType,
-        
     ) {
         this.interval = new Interval(a, b, dx)
         this.population = new Population(

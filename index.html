@@ -1,8 +1,40 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetic Algorithm - Krzysztof Michalski, Krzosa Karol</title>
+    <script src="output/script/script.js"></script>
 </head>
 <body>
-
+    <form id="genetic-form">
+        <label>a:</label>
+        <input type="text" id="a" name="a" value="1">
+        <label>b:</label>
+        <input type="text" id="b" name="b" value="5">
+        <label>dx:</label>
+        <input type="text" id="dx" name="dx" value="1">
+        <label>population size:</label>
+        <input type="text" id="populationSize" name="populationSize" value="1">
+        <label>variableCount:</label>
+        <input type="text" id="variableCount" name="variableCount" value="1">
+        <label>epochCount:</label>
+        <input type="text" id="epochCount" name="epochCount" value="1">
+        <label>selectionMethodArg:</label>
+        <input type="text" id="selectionMethodArg" name="selectionMethodArg" value="1">
+        <label>eliteStrategyCount:</label>
+        <input type="text" id="eliteStrategyCount" name="eliteStrategyCount" value="1">
+        <label>crossoverProbability:</label>
+        <input type="text" id="crossoverProbability" name="crossoverProbability" value="1">
+        <label>mutationProbability:</label>
+        <input type="text" id="mutationProbability" name="mutationProbability" value="1">
+        <label>inversionProbability:</label>
+        <input type="text" id="inversionProbability" name="inversionProbability" value="1">
+    </form>
+    functionToSolve: Function,
+    selectionMethod,
+    crossoverMethod: Function,
+    mutationMethod,
+    minimize: ExtremeType,
 </body>
 </html>

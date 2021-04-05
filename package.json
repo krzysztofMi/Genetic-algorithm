@@ -2,9 +2,10 @@
   "name": "genetic-algo",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/scrpit/script.js",
+  "main": "./src/script/script.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "npx tsc --outDir ./output src/script/script.ts"
   },
   "author": "",
   "license": "ISC",
