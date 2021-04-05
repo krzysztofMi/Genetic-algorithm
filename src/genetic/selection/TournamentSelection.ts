@@ -18,13 +18,17 @@ export default class TournamentSelection implements Selection {
     setExtremeType(extremeType: ExtremeType) { this.extreme = extremeType } 
 
     selectBest(evaluatedIndividuals: number[]): Map<number, number> {
-        const n = evaluatedIndividuals.length/this.k
+        const n = Math.ceil(evaluatedIndividuals.length/this.k)
+        const reminder =  evaluatedIndividuals.length%this.k
         const randomIndexs = getRandomIndexs(evaluatedIndividuals.length)
         let bests = new Map()
         for(let i = 0; i<n; i++) {
-            let bestIndex = randomIndexs[i*n]
+            let bestIndex = randomIndexs[i*this.k]
             let best = evaluatedIndividuals[bestIndex]
             for(let j = 1; j<this.k; j++) {
+                if(i == n-1 && j >= reminder) {
+                    break;
+                }
                 let index = randomIndexs[i*n+j]
                 const next = evaluatedIndividuals[index]
                 switch(this.extreme) {
