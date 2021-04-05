@@ -9,6 +9,7 @@ import BinaryChromosome from "../genetic/chromosome/BinaryChromosome"
 import RealChromosome from "../genetic/chromosome/RealChromosome"
 import * as c from "../genetic/Crossover"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
+import BitFlipMutation from "../genetic/mutation/BitFilpMutation"
 
 // function seek_min(idx: number[], numbers: number[]) {
 //     let min = {"val": numbers[idx[0]], "idx": 0}
@@ -82,85 +83,107 @@ function gatherValuesFrom(indicesSublist: number[], list) {
 
 
 test("Full algorithm", () => {
-    let interval = new Interval(1, 5, 1)
-// 
-//  
-/*
-Initialize population()
-Loop{
-    Evaluation()
-    if(Evaluation() == done) break;
-    Selection()
-    Crossover()
-    Mutation()
-}*/
+    /*
+    Initialize population()
+    Loop{
+        Evaluation()
+        if(Evaluation() == done) break;
+        Selection()
+        Crossover()
+        Mutation()
+    }*/
 
     // population of size 10
     // 2 genes per chromosome
     // interval encodes the range of possible values and the step from one value to next
     // ExtremeType communicates whether... well I'm not sure
-    let population = new Population(10, 2, interval, ExtremeType.MIN)
+    let settings = {
+        "rangeBegin": 1,
+        "rangeEnd": 5,
+        "rangeStep": 1,
+        "populationCount": 10,
+        "geneCount": 2,
+        "epochCount": 10,
+        "function": (it)=>it[0]*it[1],
+        "selectionMethod": BestScoreSelection,
+        "selectionMethodArg": 40, // BestScorePercentage, Tournament thing
+        "crossoverMethod": c.crossover1,
+        "mutationMethod": TwoPointFlip,
+        "eliteStrategyCount": 2,
+        "crossoverProbability": 0.9,
+        "mutationProbability": 0.4,
+        "inversionProbability": 0.5,
+        "minimize": ExtremeType.MIN,
+    }
 
+    let selection = new settings['selectionMethod'](settings['selectionMethodArgs'], settings['minimize']) 
+    let interval = new Interval(settings['rangeBegin'], settings['rangeEnd'], settings['rangeStep'])
+    let population = new Population(settings['populationCount'], settings['geneCount'], interval, settings['minimize'])
+    let mutation = new TwoPointFlip(settings['inversionProbability'])
+    for(let epoch = 0; epoch < settings['epochCount']; epoch++) {
+        population.decodePopulation()
+        population.evaluateAndSetBest(settings['function'])
 
+        // TODO: Tournament selection - zeby dzialalo parzyste albo nie parzyste i powiedziec krzysiowi
+        
+        let bests = selection.selectBest(population.evaluatedIndividuals)
+        
+        let indicesOfBest = findIndicesOf(bests, population.evaluatedIndividuals)
+        let bestBinaryChromosomes: BinaryChromosome[] = gatherValuesFrom(indicesOfBest, population.individuals)
+
+        console.log("Best evaluations: ", bests)
+        console.log("All evaluated individuals: ", population.evaluatedIndividuals)
+        console.log("Indices of best individuals: ", indicesOfBest)
+        console.log("Binary of best:", bestBinaryChromosomes)
+
+        let offspring = []
+        let pairs = Math.floor(bestBinaryChromosomes.length / 2)
+        for(let i = 0; i < pairs; i++) {
+            let luck = Math.random()
+            expect(luck <= 1.0 && luck >= 0).toBeTruthy()
+
+            let pair = i * 2
+            let guy = bestBinaryChromosomes[pair].getAllels()
+            let girl = bestBinaryChromosomes[pair+1].getAllels()
+            
+            // Sometimes copy the individuals fully from parents
+            // Mostly crossover the parents to create modified children
+            let children
+            if(luck > settings['crossoverProbability']) {
+                children = [guy.slice(), girl.slice()]
+            } else {
+                children = settings['crossoverMethod'](guy, girl)
+            }
+
+            offspring.push(new BinaryChromosome(settings['geneCount'], children[0]))
+            offspring.push(new BinaryChromosome(settings['geneCount'], children[1]))
+        }
+
+        console.log("Offspring: ", offspring)
+        
+        
+        // Two point flip sometimes (25% of the time in this case) inverts two bits in a binary sequence
+        for(let i = 0;i < offspring.length; i++) {
+            let luckFactor = Math.random()
+            if(settings['mutationProbability'] > luckFactor) {
+                mutation.mutate(offspring[i])
+            }
+        }
+
+        console.log("Offspring after mutation: ", offspring)
+        let newPopulation = offspring.concat(bestBinaryChromosomes)
+        console.log("New population: ", newPopulation)
+
+        population.individuals = newPopulation 
+        population.decodedIndividuals = []
+        population.evaluatedIndividuals = []
+        population.bestIndividual = undefined
+    }
+
+    
     population.decodePopulation()
-    population.evaluateAndSetBest((it)=>it[0]*it[1])
-    // console.log(population.evaluatedIndividuals)
-    // console.log(population.individuals)
-    // console.log(population.decodedIndividuals)
-    // return new RealChromosome(
-    //                it.getGeneNumbers(),
-    //             it.decode(this.interval))
-    // console.log(population.individuals[2])
-    // console.log(population.individuals[2].decode(interval))
-
-    // TODO: Tournament selection - zeby dzialalo parzyste albo nie parzyste i powiedziec krzysiowi
-    let selection: BestScoreSelection = new BestScoreSelection(40, ExtremeType.MIN) 
-    let bests = selection.selectBest(population.evaluatedIndividuals)
-    
-    let indicesOfBest = findIndicesOf(bests, population.evaluatedIndividuals)
-    let bestBinaryChromosomes: BinaryChromosome[] = gatherValuesFrom(indicesOfBest, population.individuals)
-    let bestRealChromosomes: RealChromosome[] = gatherValuesFrom(indicesOfBest, population.decodedIndividuals)
-
-    console.log("Best evaluations: ", bests)
-    console.log("All evaluated individuals: ", population.evaluatedIndividuals)
-    console.log("Indices of best individuals: ", indicesOfBest)
-    console.log("Binary of best:", bestBinaryChromosomes)
-    // console.log(bestRealChromosomes)
-
-    // TODO:  2 Chromosomy krzyżujemy !!!! nie geny xD
-    // let chromosomes = []
-    // for(let i = 0; i < bestBinaryChromosomes.length; i++) {
-    //     let allels = bestBinaryChromosomes[i].getAllels()
-    //     let binaryA = [allels[0], allels[1], allels[2]]
-    //     let binaryB = [allels[3], allels[4], allels[5]]
-    //     c.crossover2(binaryA, binaryB)
-    //     chromosomes.push([binaryA, binaryB])
-    // }
-    // console.log("Binary after crossover:", chromosomes)
-    
-    
-    // let newChromosomes = []
-    
-    // for(let i = 0; i < chromosomes.length; i++) {
-    //     let currentChromosome = chromosomes[i]
-    //     let combine = []
-    //     for(let j = 0; j < currentChromosome.length; j++) {
-    //         combine = combine.concat(currentChromosome[j])
-    //     }
-
-    //     let instance = new BinaryChromosome(currentChromosome.length, combine)
-    //     newChromosomes.push(instance)
-    // }
-
-    // Two point flip sometimes (25% of the time in this case) inverts two bits in a binary sequence
-    // console.log("Crossover chromosomes: ", newChromosomes)
-    // let mutation = new TwoPointFlip(0.25)
-    // for(let i = 0;i < newChromosomes.length; i++) {
-    //     mutation.mutate(newChromosomes[i])
-    // }
-
-    // console.log("Chromosomes after mutation: ", newChromosomes)
-    
+    population.evaluateAndSetBest(settings['function'])
+    console.log(population)
 
 
     // population.
