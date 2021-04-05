@@ -28,7 +28,7 @@ test("Roulette wheel selection test", ()=> {
 })
 
 test("Best score selection test MAX", ()=> {
-    let selection: Selection = new BestScoreSelection(30, ExtremeType.MAX) 
+    let selection: Selection = new BestScoreSelection(0.3, ExtremeType.MAX) 
     let evaluatedIndividuals: number[] = [23, 17.5, 13, 37, 11.125, 26.125, 149.5, 65.5, 195.125]
     let evaluatedIndividualsCopy: number[] = evaluatedIndividuals.slice()
     let bests = selection.selectBest(evaluatedIndividuals)
@@ -39,7 +39,7 @@ test("Best score selection test MAX", ()=> {
 })
 
 test("Best score selection test MIN", ()=> {
-    let selection: Selection = new BestScoreSelection(30, ExtremeType.MIN) 
+    let selection: Selection = new BestScoreSelection(0.3, ExtremeType.MIN) 
     let bests = selection.selectBest([23, 17.5, 13, 37, 11.125, 26.125, 149.5, 65.5, 195.125])
     expect(bests[0]).toEqual(11.125)
 })

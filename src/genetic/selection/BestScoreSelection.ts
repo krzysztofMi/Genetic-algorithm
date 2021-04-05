@@ -5,9 +5,9 @@ export default class BestScoreSelection implements Selection {
     private extreme: ExtremeType
     private out_fraction: number
     setExtremeType(extreme: ExtremeType) { this.extreme = extreme }
-    constructor(out_percentage: number, extreme: ExtremeType) { 
+    constructor(out_fraction: number, extreme: ExtremeType) { 
         this.extreme = extreme
-        this.out_fraction = out_percentage / 100.0
+        this.out_fraction = out_fraction
 
         if(this.out_fraction > 1.0) {
             this.out_fraction = 1.0
