@@ -4,11 +4,11 @@ import BestScoreSelection from "../genetic/selection/BestScoreSelection"
 import * as c from "../genetic/Crossover"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 
-let form = document.getElementById("genetic-form")
+let form = document.getElementById("genetic")
 if(form == undefined) {
     console.log("Form is undefined")
 } else {
-    form.addEventListener("onsubmit", function(event){
+    form.addEventListener("submit", function(event){
         event.preventDefault()
         console.log("Form submit!")
     })
