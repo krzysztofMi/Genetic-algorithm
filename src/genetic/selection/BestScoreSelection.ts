@@ -48,7 +48,7 @@ export default class BestScoreSelection implements Selection {
             result.push(copy[i])
         }
 
-        let indices = findIndicesOf(copy, evaluatedIndividuals)
+        let indices = findIndicesOf(result, evaluatedIndividuals)
 
         return [result, indices]
     }
