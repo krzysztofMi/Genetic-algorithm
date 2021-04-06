@@ -132,30 +132,6 @@ export default class GeneticAlgorithm {
     }
 }
 
-function findIndicesOf(sublist: number[], list: number[]): number[] {
-    let result = []
-    for(let i = 0; i < sublist.length; i++) {
-        let fromIndex = 0
-        for(;;) {
-            let val = list.indexOf(sublist[i], fromIndex)
-            if(val != -1) {
-                let indexOf = result.indexOf(val)
-                if(indexOf == -1) {
-                    result.push(val)
-                    break
-                } else {
-                    fromIndex = val + 1
-                }
-            } else {
-                result.push("not found")
-                break
-            }
-        }
-    }
-
-    return result
-}
-
 function gatherValuesFrom(indicesSublist: number[], list) {
     let result = []
     for(let i = 0; i < indicesSublist.length; i++) {
@@ -164,11 +140,5 @@ function gatherValuesFrom(indicesSublist: number[], list) {
         result.push(val)
     }
 
-    return result
-}
-
-function getIndividuals(population, scores): BinaryChromosome[] {
-    let indices = findIndicesOf(scores, population.evaluatedIndividuals)
-    let result = gatherValuesFrom(indices, population.individuals)
     return result
 }
