@@ -15,7 +15,9 @@ export default class RouletteWheel implements Selection {
     }
     
     selectBest(evaluatedIndividuals: number[]): number[][] {
-        let individuals = this.changeIndiviudal(evaluatedIndividuals)
+        let bias = 1
+        let offset = Math.abs(Math.min(...evaluatedIndividuals)) + bias
+        let individuals = this.changeIndiviudal(evaluatedIndividuals, offset)
         let sum = individuals.reduce((sum, num)=>sum+num, 0)
         let probabilites = individuals.map(it=>it/sum)
         let distributors = this.calculateDistributors(probabilites)
@@ -34,12 +36,12 @@ export default class RouletteWheel implements Selection {
     }
 
 
-    private changeIndiviudal(evaluatedIndividuals: number[]): number[]{
+    private changeIndiviudal(evaluatedIndividuals: number[], offset: number): number[]{
         switch(this.extreme) {
             case ExtremeType.MIN:
-                return evaluatedIndividuals.map((it)=>1/it)
+                return evaluatedIndividuals.map((it)=>1/(it + offset))
             case ExtremeType.MAX:
-                return evaluatedIndividuals  
+                return evaluatedIndividuals.map(it=>it+offset)  
         }
     }
 
