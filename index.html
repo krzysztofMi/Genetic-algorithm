@@ -1,8 +1,68 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krzysztof Michalski, Krzosa Karol</title>
+    <script src="dist/scripts.js" defer></script>
 </head>
 <body>
-
+    <form id="genetic" name="genetic">
+        <label>a:</label>
+        <input type="text" id="a" name="a" value="1">
+        <label>b:</label>
+        <input type="text" id="b" name="b" value="5">
+        <label>dx:</label>
+        <input type="text" id="dx" name="dx" value="1">
+        <label>population size:</label>
+        <input type="text" id="populationSize" name="populationSize" value="1">
+        <label>variableCount:</label>
+        <input type="text" id="variableCount" name="variableCount" value="1">
+        <label>epochCount:</label>
+        <input type="text" id="epochCount" name="epochCount" value="1">
+        <label>selectionMethodArg:</label>
+        <input type="text" id="selectionMethodArg" name="selectionMethodArg" value="1">
+        <label>eliteStrategyCount:</label>
+        <input type="text" id="eliteStrategyCount" name="eliteStrategyCount" value="1">
+        <label>crossoverProbability:</label>
+        <input type="text" id="crossoverProbability" name="crossoverProbability" value="1">
+        <label>mutationProbability:</label>
+        <input type="text" id="mutationProbability" name="mutationProbability" value="1">
+        <label>inversionProbability:</label>
+        <input type="text" id="inversionProbability" name="inversionProbability" value="1">
+        <label>Function:</label>
+        <select id="function" name="function">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="fiat">Fiat</option>
+            <option value="audi">Audi</option>
+        </select>
+        <label>selectionMethod:</label>
+        <select id="selectionMethod" name="selectionMethod">
+            <option value="bestScore">bestScore</option>
+            <option value="tournament">tournament</option>
+            <option value="roulette">roulette</option>
+        </select>
+        <label>crossoverMethod:</label>
+        <select id="crossoverMethod" name="crossoverMethod">
+            <option value="onePoint">onePoint</option>
+            <option value="twoPoint">twoPoint</option>
+            <option value="threePoint">threePoint</option>
+            <option value="homogenous">homogenous</option>
+        </select>
+        <label>mutationMethod:</label>
+        <select id="mutationMethod" name="mutationMethod">
+            <option value="onePointFlip">onePointFlip</option>
+            <option value="twoPointFlip">twoPointFlip</option>
+            <option value="boundaryFlipBit">boundaryFlipBit</option>
+            <!-- <option value="inversion">inversion</option> -->
+        </select>
+        <label>minimize?:</label>
+        <select id="minimize" name="minimize">
+            <option value="minimize">minimize</option>
+            <option value="maximize">maximize</option>
+        </select>
+        <input type="submit" value="Solve!">
+    </form>
 </body>
 </html>
