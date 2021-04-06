@@ -80,10 +80,12 @@ export default class GeneticAlgorithm {
             this.population.evaluateAndSetBest(this.function)
 
             let elite = this.eliteStrategySelection.selectBest(this.population.evaluatedIndividuals)
+            elite = elite[0]
             elite = getIndividuals(this.population, elite)            
             
             // TODO: Tournament selection - zeby dzialalo parzyste albo nie parzyste i powiedziec krzysiowi
             let selected = this.selection.selectBest(this.population.evaluatedIndividuals)
+            selected = selected[0]
             selected = getIndividuals(this.population, selected)
 
             let offspring = []

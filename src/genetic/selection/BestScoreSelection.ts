@@ -1,6 +1,30 @@
 import ExtremeType from "../../enum/ExtremeType";
 import Selection from "./Selection"
 
+function findIndicesOf(sublist: number[], list: number[]): number[] {
+    let result = []
+    for(let i = 0; i < sublist.length; i++) {
+        let fromIndex = 0
+        for(;;) {
+            let val = list.indexOf(sublist[i], fromIndex)
+            if(val != -1) {
+                let indexOf = result.indexOf(val)
+                if(indexOf == -1) {
+                    result.push(val)
+                    break
+                } else {
+                    fromIndex = val + 1
+                }
+            } else {
+                result.push("not found")
+                break
+            }
+        }
+    }
+
+    return result
+}
+
 export default class BestScoreSelection implements Selection {
     private extreme: ExtremeType
     private out_fraction: number
@@ -10,7 +34,7 @@ export default class BestScoreSelection implements Selection {
         this.out_fraction = out_fraction
     }
 
-    selectBest(evaluatedIndividuals: number[]): number[] {
+    selectBest(evaluatedIndividuals: number[]): [number[], number[]] {
         let copy = evaluatedIndividuals.slice()
         if(this.extreme == ExtremeType.MAX) {
             copy.sort((a,b) => b - a)
@@ -24,7 +48,9 @@ export default class BestScoreSelection implements Selection {
             result.push(copy[i])
         }
 
-        return result
+        let indices = findIndicesOf(copy, evaluatedIndividuals)
+
+        return [result, indices]
     }
 
 }

@@ -17,11 +17,12 @@ export default class TournamentSelection implements Selection {
 
     setExtremeType(extremeType: ExtremeType) { this.extreme = extremeType } 
 
-    selectBest(evaluatedIndividuals: number[]): Map<number, number> {
+    selectBest(evaluatedIndividuals: number[]): [number[], number[]] {
         const n = Math.ceil(evaluatedIndividuals.length/this.k)
         const reminder =  evaluatedIndividuals.length%this.k
         const randomIndexs = getRandomIndexs(evaluatedIndividuals.length)
-        let bests = new Map()
+        let indices = []
+        let values = []
         for(let i = 0; i<n; i++) {
             let bestIndex = randomIndexs[i*this.k]
             let best = evaluatedIndividuals[bestIndex]
@@ -46,9 +47,10 @@ export default class TournamentSelection implements Selection {
                         break
                 }
             }
-            bests.set(bestIndex, best)
+            indices.push(bestIndex)
+            values.push(best)
         }
-        return bests
+        return [values, indices]
     }
 
 }
