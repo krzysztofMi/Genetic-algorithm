@@ -5,6 +5,7 @@ import Mutation from "./mutation/Mutation"
 import Selection from "./selection/Selection"
 import BinaryChromosome from "./chromosome/BinaryChromosome"
 import Chromosome from "./chromosome/Chromosome"
+import BestScoreSelection from "./selection/BestScoreSelection"
 
 // 1 
 // geneticAlgorithm = new GeneticAlgorithm(...)
@@ -21,6 +22,7 @@ export default class GeneticAlgorithm {
     private interval: Interval
     private population: Population
     private selection: Selection
+    private eliteStrategySelection: Selection
     private mutation: Mutation
     private crossover: Function
 
@@ -66,6 +68,10 @@ export default class GeneticAlgorithm {
         this.eliteStrategyCount = eliteStrategyCount
         this.crossoverProbability = crossoverProbability
         this.mutationProbability = mutationProbability
+
+        let fraction =  eliteStrategyCount / populationSize
+        console.assert(fraction >= 0 && fraction <= 1)
+        this.eliteStrategySelection = new BestScoreSelection(minimize, fraction)
     }
 
     solve(): Chromosome {
@@ -73,20 +79,22 @@ export default class GeneticAlgorithm {
             this.population.decodePopulation()
             this.population.evaluateAndSetBest(this.function)
 
+            let elite = this.eliteStrategySelection.selectBest(this.population.evaluatedIndividuals)
+            elite = getIndividuals(this.population, elite)            
+            
             // TODO: Tournament selection - zeby dzialalo parzyste albo nie parzyste i powiedziec krzysiowi
-            let bests = this.selection.selectBest(this.population.evaluatedIndividuals)
-            let indicesOfBest = findIndicesOf(bests, this.population.evaluatedIndividuals)
-            let bestBinaryChromosomes: BinaryChromosome[] = gatherValuesFrom(indicesOfBest, this.population.individuals)
+            let selected = this.selection.selectBest(this.population.evaluatedIndividuals)
+            selected = getIndividuals(this.population, selected)
 
             let offspring = []
-            let pairs = Math.floor(bestBinaryChromosomes.length / 2)
+            let pairs = Math.floor(selected.length / 2)
             for(let i = 0; i < pairs; i++) {
                 let luck = Math.random()
                 expect(luck <= 1.0 && luck >= 0).toBeTruthy()
 
                 let pair = i * 2
-                let guy = bestBinaryChromosomes[pair].getAllels()
-                let girl = bestBinaryChromosomes[pair+1].getAllels()
+                let guy = selected[pair].getAllels()
+                let girl = selected[pair+1].getAllels()
                 
                 // Sometimes copy the individuals fully from parents
                 // Mostly crossover the parents to create modified children
@@ -107,8 +115,8 @@ export default class GeneticAlgorithm {
                 }
             }
 
-            let newPopulation = offspring.concat(bestBinaryChromosomes)
-            console.log("New population: ", newPopulation)
+            let newPopulation = offspring.concat(selected, elite)
+            // console.log("New population: ", newPopulation)
 
             this.population.individuals = newPopulation 
             this.population.decodedIndividuals = []
@@ -119,6 +127,7 @@ export default class GeneticAlgorithm {
         
         this.population.decodePopulation()
         this.population.evaluateAndSetBest(this.function)
+        console.log(this.population.bestIndividual)
         return this.population.bestIndividual
     }
 }
@@ -155,5 +164,11 @@ function gatherValuesFrom(indicesSublist: number[], list) {
         result.push(val)
     }
 
+    return result
+}
+
+function getIndividuals(population, scores): BinaryChromosome[] {
+    let indices = findIndicesOf(scores, population.evaluatedIndividuals)
+    let result = gatherValuesFrom(indices, population.individuals)
     return result
 }
