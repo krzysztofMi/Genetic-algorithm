@@ -15,7 +15,7 @@ if(form == undefined) {
     form.addEventListener("submit", function(event){
         event.preventDefault()
         const formData = new FormData(document.querySelector('form'))
-        let settings = {}
+        let settings = {};
         formData.forEach((val, key) => {
             settings[key] = val
         })
@@ -35,6 +35,20 @@ if(form == undefined) {
             "maximize": ExtremeType.MAX,
         }
 
+
+        if(settings['function'] == "fun1") {
+          settings['function'] = (it) => it[0] * it[1]
+        } else if(settings['function'] == "fun2") {
+            settings['function'] = (it) => it[0] + 5 * it[1]
+        } else if (settings['function'] == 'fun3') {
+            settings['function'] = (it) => it[0] + 5 * it[1]
+        } else if (settings['function'] == 'fun4') {
+            settings['function'] = (it) => it[0] + 5 * it[1]
+        } else {
+            settings['function'] = (it) => it[0] + 5 * it[1]
+        }
+
+        settings['variableCount'] = 2
         settings['mutationMethod'] = dispatchTable[settings['mutationMethod']]
         settings['crossoverMethod'] = dispatchTable[settings['crossoverMethod']]
         settings['selectionMethod'] = dispatchTable[settings['selectionMethod']]
@@ -62,7 +76,7 @@ if(form == undefined) {
             /*minimize*/ settings['minimize'],
         )
 
-        console.log(genetic)
+        console.log(genetic.solve())
     })
 }
 

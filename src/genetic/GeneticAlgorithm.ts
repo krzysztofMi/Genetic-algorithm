@@ -90,7 +90,6 @@ export default class GeneticAlgorithm {
             let pairs = Math.floor(selected.length / 2)
             for(let i = 0; i < pairs; i++) {
                 let luck = Math.random()
-                expect(luck <= 1.0 && luck >= 0).toBeTruthy()
 
                 let pair = i * 2
                 let guy = selected[pair].getAllels()
