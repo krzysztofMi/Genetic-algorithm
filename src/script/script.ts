@@ -24,20 +24,20 @@ if(form == undefined) {
             "onePointFlip": OnePointFlip,
             "twoPointFlip": TwoPointFlip,
             "boundaryFlipBit": BoundaryFlipBit,
-            "onePoint": c.crossover1,
-            "twoPoint": c.crossover2,
-            "threePoint": c.crossover3,
-            "homogenous": c.crossoverHomogenous,
-            "bestScore": BestScoreSelection,
-            "tournament": TournamentSelection,
-            "roulette": RouletteWheel,
+            "onePointCrossover": c.crossover1,
+            "twoPointCrossover": c.crossover2,
+            "threePointCrossover": c.crossover3,
+            "homogenousCrossover": c.crossoverHomogenous,
+            "bestScoreSelection": BestScoreSelection,
+            "tournamentSelection": TournamentSelection,
+            "rouletteSelection": RouletteWheel,
             "minimize": ExtremeType.MIN,
             "maximize": ExtremeType.MAX,
         }
 
 
         if(settings['function'] == "fun1") {
-          settings['function'] = (it) => it[0] * it[1]
+            settings['function'] = (it) => it[0] * it[1]
         } else if(settings['function'] == "fun2") {
             settings['function'] = (it) => it[0] + 5 * it[1]
         } else if (settings['function'] == 'fun3') {
@@ -47,36 +47,54 @@ if(form == undefined) {
         } else {
             settings['function'] = (it) => it[0] + 5 * it[1]
         }
-
         settings['variableCount'] = 2
+
         settings['mutationMethod'] = dispatchTable[settings['mutationMethod']]
         settings['crossoverMethod'] = dispatchTable[settings['crossoverMethod']]
         settings['selectionMethod'] = dispatchTable[settings['selectionMethod']]
         settings['minimize'] = dispatchTable[settings['minimize']]
 
+        // xD
+        settings['a'] = Number(settings['a'])
+        settings['b'] = Number(settings['b'])
+        settings['dx'] = Number(settings['dx'])
+        settings['populationSize'] = Number(settings['populationSize'])
+        settings['variableCount'] = Number(settings['variableCount'])
+        settings['epochCount'] = Number(settings['epochCount'])
+        settings['selectionMethodArg'] = Number(settings['selectionMethodArg'])
+        settings['eliteStrategyCount'] = Number(settings['eliteStrategyCount'])
+        settings['crossoverProbability'] = Number(settings['crossoverProbability'])
+        settings['mutationProbability'] = Number(settings['mutationProbability'])
+        settings['inversionProbability'] = Number(settings['inversionProbability'])
 
+        let settings_test = {}
+        settings_test['a'] = 1
+        settings_test['b']= 5
+        settings_test['dx']= 1
+        settings_test['populationSize']= 100
+        settings_test['variableCount']= 2
+        settings_test['epochCount']= 10
+        settings_test['function']= (it)=>it[0]*it[1]
+        settings_test['selectionMethod']= BestScoreSelection
+        settings_test['selectionMethodArg']= 0.4
+        settings_test['crossoverMethod']= c.crossover1
+        settings_test['mutationMethod']= TwoPointFlip
+        settings_test['eliteStrategyCount']= 2
+        settings_test['crossoverProbability']= 0.9
+        settings_test['mutationProbability']= 0.4
+        settings_test['inversionProbability']= 0.5
+        settings_test['minimize']= ExtremeType.MIN
+        console.assert(settings == settings_test, settings_test)
         console.log(settings)
 
-        let genetic = new GeneticAlgorithm(
-            /*a*/ settings['a'],
-            /*b*/ settings['b'],
-            /*dx*/ settings['dx'],
-            /*populationSize*/ settings['populationSize'],
-            /*variableCount*/ settings['variableCount'],
-            /*epochCount*/ settings['epochCount'],
-            /*function*/ settings['function'],
-            /*selectionMethod*/ settings['selectionMethod'],
-            /*selectionMethodArg*/ settings['selectionMethodArg'], // BestScore Fraction, Tournament selection parameter
-            /*crossoverMethod*/ settings['crossoverMethod'],
-            /*mutationMethod*/ settings['mutationMethod'],
-            /*eliteStrategyCount*/ settings['eliteStrategyCount'],
-            /*crossoverProbability*/ settings['crossoverProbability'],
-            /*mutationProbability*/ settings['mutationProbability'],
-            /*inversionProbability*/ settings['inversionProbability'],
-            /*minimize*/ settings['minimize'],
-        )
+        let genetic = new GeneticAlgorithm(settings)
+        let     result = genetic.solve()
 
-        console.log(genetic.solve())
+        form.remove()
+        let paragraph = document.createElement('p');
+        let node = document.createTextNode(JSON.stringify(result));
+        paragraph.appendChild(node);
+        document.body.appendChild(paragraph);
     })
 }
 

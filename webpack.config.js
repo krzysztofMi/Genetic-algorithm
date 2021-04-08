@@ -6,5 +6,8 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'scripts.js',
   },
+  optimization:{
+    minimize: false
+  }
   
 };

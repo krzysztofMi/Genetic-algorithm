@@ -7,16 +7,6 @@ import BinaryChromosome from "./chromosome/BinaryChromosome"
 import Chromosome from "./chromosome/Chromosome"
 import BestScoreSelection from "./selection/BestScoreSelection"
 
-// 1 
-// geneticAlgorithm = new GeneticAlgorithm(...)
-// geneticAlgorithm.solve()
-// 2
-// Genetic.solveFunction({...})
-// 3
-// settings = new Genetic.settings(...)
-// Genetic.solve(settings)
-//
-
 export default class GeneticAlgorithm {
     
     private interval: Interval
@@ -34,44 +24,29 @@ export default class GeneticAlgorithm {
     private variableCount: number
 
     constructor(
-        a: number,
-        b: number,
-        dx: number,
-        populationSize: number,
-        variableCount: number,
-        epochCount: number,
-        functionToSolve: Function,
-        selectionMethod,
-        selectionMethodArg: number,
-        crossoverMethod: Function,
-        mutationMethod,
-        eliteStrategyCount: number,
-        crossoverProbability: number,
-        mutationProbability: number,
-        inversionProbability: number,
-        minimize: ExtremeType,
+        settings: Object
     ) {
-        this.interval = new Interval(a, b, dx)
+        this.interval = new Interval(settings['a'], settings['b'], settings['dx'])
         this.population = new Population(
-            populationSize,
-            variableCount, 
+            settings['populationSize'],
+            settings['variableCount'], 
             this.interval, 
-            ExtremeType.MIN)
+            settings['minimize'])
 
-        this.selection = new selectionMethod(minimize, selectionMethodArg)
-        this.mutation = new mutationMethod(inversionProbability)
-        this.crossover = crossoverMethod
+        this.selection = new settings['selectionMethod'](settings['minimize'], settings['selectionMethodArg'])
+        this.mutation = new settings['mutationMethod'](settings['inversionProbability'])
+        this.crossover = settings['crossoverMethod']
         
-        this.variableCount = variableCount
-        this.function = functionToSolve
-        this.epochCount = epochCount
-        this.eliteStrategyCount = eliteStrategyCount
-        this.crossoverProbability = crossoverProbability
-        this.mutationProbability = mutationProbability
+        this.variableCount = settings['variableCount']
+        this.function = settings['function']
+        this.epochCount = settings['epochCount']
+        this.eliteStrategyCount = settings['eliteStrategyCount']
+        this.crossoverProbability = settings['crossoverProbability']
+        this.mutationProbability = settings['mutationProbability']
 
-        let fraction =  eliteStrategyCount / populationSize
+        let fraction =  settings['eliteStrategyCount'] / settings['populationSize']
         console.assert(fraction >= 0 && fraction <= 1)
-        this.eliteStrategySelection = new BestScoreSelection(minimize, fraction)
+        this.eliteStrategySelection = new BestScoreSelection(settings['minimize'], fraction)
     }
 
     solve(): Chromosome {
@@ -81,16 +56,12 @@ export default class GeneticAlgorithm {
 
             let elite = this.eliteStrategySelection.selectBest(this.population.evaluatedIndividuals)
             elite = gatherValuesFrom(elite[1], this.population.individuals)
-
-            // TODO: Tournament selection - zeby dzialalo parzyste albo nie parzyste i powiedziec krzysiowi
             let selected = this.selection.selectBest(this.population.evaluatedIndividuals)
             selected = gatherValuesFrom(selected[1], this.population.individuals)
             
             let offspring = []
             let pairs = Math.floor(selected.length / 2)
             for(let i = 0; i < pairs; i++) {
-                let luck = Math.random()
-
                 let pair = i * 2
                 let guy = selected[pair].getAllels()
                 let girl = selected[pair+1].getAllels()
@@ -98,10 +69,10 @@ export default class GeneticAlgorithm {
                 // Sometimes copy the individuals fully from parents
                 // Mostly crossover the parents to create modified children
                 let children
-                if(luck > this.crossoverProbability) {
-                    children = [guy.slice(), girl.slice()]
-                } else {
+                if(this.crossoverProbability > Math.random()) {
                     children = this.crossover(guy, girl)
+                } else {
+                    children = [guy.slice(), girl.slice()]
                 }
 
                 offspring.push(new BinaryChromosome(this.variableCount, children[0]))
@@ -109,7 +80,7 @@ export default class GeneticAlgorithm {
             }
 
             for(let i = 0;i < offspring.length; i++) {
-                if(this.mutationProbability < Math.random()) {
+                if(this.mutationProbability > Math.random()) {
                     this.mutation.mutate(offspring[i])
                 }
             }
@@ -123,7 +94,6 @@ export default class GeneticAlgorithm {
             this.population.bestIndividual = undefined
         }
 
-        
         this.population.decodePopulation()
         this.population.evaluateAndSetBest(this.function)
         console.log(this.population.bestIndividual)
