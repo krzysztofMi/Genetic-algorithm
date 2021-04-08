@@ -80,12 +80,24 @@ if(form == undefined) {
 
         let genetic = new GeneticAlgorithm(settings)
         let result = genetic.solve()
+        let jsonResult = JSON.stringify(result)
 
         form.remove()
         let paragraph = document.createElement('p');
-        let node = document.createTextNode(JSON.stringify(result));
+        let node = document.createTextNode(jsonResult);
         paragraph.appendChild(node);
         document.body.appendChild(paragraph);
+
+
+        let storage = localStorage.getItem("genetic")
+        if(storage) {
+            let li: string[] = JSON.parse(storage)
+            li.push(jsonResult)
+            console.log(storage)
+            localStorage.setItem("genetic", JSON.stringify(li))
+        } else {
+            localStorage.setItem("genetic", JSON.stringify([jsonResult]))
+        }
     })
 }
 
