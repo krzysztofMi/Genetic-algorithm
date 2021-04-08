@@ -54,11 +54,23 @@ export default class GeneticAlgorithm {
             this.population.decodePopulation()
             this.population.evaluateAndSetBest(this.function)
 
-            let elite = this.eliteStrategySelection.selectBest(this.population.evaluatedIndividuals)
-            elite = gatherValuesFrom(elite[1], this.population.individuals)
-            let selected = this.selection.selectBest(this.population.evaluatedIndividuals)
-            selected = gatherValuesFrom(selected[1], this.population.individuals)
+            // make copies
+            let currentEval = this.population.evaluatedIndividuals.slice()
+            let currentIdiv = this.population.individuals.slice()
+
+            // select the elites, they straight up get copied to new generation
+            let elite = this.eliteStrategySelection.selectBest(currentEval)
+            let eliteIndiv = gatherValues(elite[1], currentIdiv)
+
+            // get rid of elites from the pool
+            removeValues(elite[1], currentIdiv)
+            removeValues(elite[1], currentEval)
+
+            // Do selection
+            let selected = this.selection.selectBest(currentEval)
+            selected = gatherValues(selected[1], currentIdiv)
             
+            // Crossover
             let offspring = []
             let pairs = Math.floor(selected.length / 2)
             for(let i = 0; i < pairs; i++) {
@@ -79,15 +91,15 @@ export default class GeneticAlgorithm {
                 offspring.push(new BinaryChromosome(this.variableCount, children[1]))
             }
 
+            // Mutation
             for(let i = 0;i < offspring.length; i++) {
                 if(this.mutationProbability > Math.random()) {
                     this.mutation.mutate(offspring[i])
                 }
             }
 
-            let newPopulation = offspring.concat(selected, elite)
-            // console.log("New population: ", newPopulation)
-
+            // New population 
+            let newPopulation = offspring.concat(selected, eliteIndiv)
             this.population.individuals = newPopulation 
             this.population.decodedIndividuals = []
             this.population.evaluatedIndividuals = []
@@ -96,17 +108,26 @@ export default class GeneticAlgorithm {
 
         this.population.decodePopulation()
         this.population.evaluateAndSetBest(this.function)
-        console.log(this.population.bestIndividual)
         return this.population.bestIndividual
     }
 }
 
-function gatherValuesFrom(indicesSublist: number[], list) {
+function gatherValues(indicesSublist: number[], list) {
     let result = []
     for(let i = 0; i < indicesSublist.length; i++) {
         let index = indicesSublist[i]
         let val = list[index]
         result.push(val)
+    }
+
+    return result
+}
+
+function removeValues(indicesSublist, list) {
+    let result = []
+    for(let i = 0; i < indicesSublist.length; i++) {
+        let index = indicesSublist[i]
+        list.splice(index, 1)
     }
 
     return result

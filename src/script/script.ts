@@ -33,27 +33,18 @@ if(form == undefined) {
             "rouletteSelection": RouletteWheel,
             "minimize": ExtremeType.MIN,
             "maximize": ExtremeType.MAX,
+            "fun1": (it) => it[0] * it[1],
+            "fun2": (it) => it[0] + 5 * it[1],
+            "fun3": (it) => it[0] + 5 * it[1],
+            "fun4": (it) => it[0] + 5 * it[1],
         }
 
-
-        if(settings['function'] == "fun1") {
-            settings['function'] = (it) => it[0] * it[1]
-        } else if(settings['function'] == "fun2") {
-            settings['function'] = (it) => it[0] + 5 * it[1]
-        } else if (settings['function'] == 'fun3') {
-            settings['function'] = (it) => it[0] + 5 * it[1]
-        } else if (settings['function'] == 'fun4') {
-            settings['function'] = (it) => it[0] + 5 * it[1]
-        } else {
-            settings['function'] = (it) => it[0] + 5 * it[1]
-        }
         settings['variableCount'] = 2
-
+        settings['function'] = dispatchTable[settings['function']]
         settings['mutationMethod'] = dispatchTable[settings['mutationMethod']]
         settings['crossoverMethod'] = dispatchTable[settings['crossoverMethod']]
         settings['selectionMethod'] = dispatchTable[settings['selectionMethod']]
         settings['minimize'] = dispatchTable[settings['minimize']]
-
         // xD
         settings['a'] = Number(settings['a'])
         settings['b'] = Number(settings['b'])
@@ -88,7 +79,7 @@ if(form == undefined) {
         console.log(settings)
 
         let genetic = new GeneticAlgorithm(settings)
-        let     result = genetic.solve()
+        let result = genetic.solve()
 
         form.remove()
         let paragraph = document.createElement('p');

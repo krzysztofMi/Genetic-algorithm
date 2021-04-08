@@ -32,7 +32,12 @@ test("Full algorithm", () => {
     settings['inversionProbability']= 0.5
     settings['minimize']= ExtremeType.MIN
     let genetic = new GeneticAlgorithm(settings)
-
     let result = genetic.solve()
     expect(result.getAllels()).toEqual([1,1])
+
+
+    settings['minimize'] = ExtremeType.MAX
+    genetic = new GeneticAlgorithm(settings)
+    result = genetic.solve()
+    console.log(result)
 })
