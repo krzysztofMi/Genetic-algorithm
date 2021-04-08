@@ -23,11 +23,18 @@ select {
     margin-bottom: 10px;
 }
 
-form {
+.pcontainer {
     margin: auto;
-    max-width:200px;
     text-align: center;
     display: flex;
     flex-direction: column;
+}
+
+form {
     margin-bottom: 100px;
+    max-width:200px;
+}
+
+p {
+    margin: 20px;
 }

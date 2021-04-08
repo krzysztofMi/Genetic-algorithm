@@ -9,6 +9,7 @@ import OnePointFlip from "../genetic/mutation/OnePointFlip"
 import BoundaryFlipBit from "../genetic/mutation/BoundaryFlipBit"
 
 let form = document.getElementById("genetic")
+let container = document.getElementById("pcontainer")
 if(form == undefined) {
     console.log("Form is undefined")
 } else {
@@ -83,15 +84,24 @@ if(form == undefined) {
         let jsonResult = JSON.stringify(result)
 
         form.remove()
-        let paragraph = document.createElement('p');
-        let node = document.createTextNode(jsonResult);
-        paragraph.appendChild(node);
-        document.body.appendChild(paragraph);
 
+        function addParagraph(txt) {
+            let paragraph = document.createElement('p');
+            let node = document.createTextNode(txt);
+            paragraph.appendChild(node);
+            container.appendChild(paragraph)
+        }
+        
+        addParagraph("Result: " + jsonResult)
 
         let storage = localStorage.getItem("genetic")
         if(storage) {
             let li: string[] = JSON.parse(storage)
+
+            addParagraph("Previous results:")
+            addParagraph(storage)
+
+
             li.push(jsonResult)
             console.log(storage)
             localStorage.setItem("genetic", JSON.stringify(li))
