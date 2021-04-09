@@ -6,6 +6,7 @@ import Selection from "./selection/Selection"
 import BinaryChromosome from "./chromosome/BinaryChromosome"
 import Chromosome from "./chromosome/Chromosome"
 import BestScoreSelection from "./selection/BestScoreSelection"
+import RealChromosome from "./chromosome/RealChromosome"
 
 export default class GeneticAlgorithm {
     
@@ -15,13 +16,23 @@ export default class GeneticAlgorithm {
     private eliteStrategySelection: Selection
     private mutation: Mutation
     private crossover: Function
-
     private function: Function
     private epochCount: number
     private eliteStrategyCount: number
     private crossoverProbability: number
     private mutationProbability: number
     private variableCount: number
+
+    //Chart variables
+    private bests: number[] = []
+    private means: number[] = []
+    private stds: number[] = []
+
+    //Timer
+    private elapsedTime: number = 0
+    
+    //For save to file
+    private bestChromosomes: Chromosome[] = []
 
     constructor(
         settings: Object
@@ -42,7 +53,7 @@ export default class GeneticAlgorithm {
         this.epochCount = settings['epochCount']
         this.eliteStrategyCount = settings['eliteStrategyCount']
         this.crossoverProbability = settings['crossoverProbability']
-        this.mutationProbability = settings['mutationProbability']
+        this.mutation.setProbability(settings['mutationProbability'])
 
         let fraction =  settings['eliteStrategyCount'] / settings['populationSize']
         console.assert(fraction >= 0 && fraction <= 1)
@@ -50,9 +61,27 @@ export default class GeneticAlgorithm {
     }
 
     solve(): Chromosome {
+        this.bests = []
+        this.means = []
+        this.stds = []
+        this.bestChromosomes = []
+        const start = new Date().getTime();
         for(let epoch = 0; epoch < this.epochCount; epoch++) {
             this.population.decodePopulation()
             this.population.evaluateAndSetBest(this.function)
+            // set chart variables
+            this.bests.push(this.population.getBestValue())
+            let sum = this.population.getEvaluatedIndividuals().reduce((a, b)=>a+b, 0)
+            let len = this.population.getLenght()
+            let mean = sum/len
+            this.means.push(mean)
+            this.bestChromosomes.push(this.population.getBestIndividual())
+            sum = 0
+            for(let i of this.population.getEvaluatedIndividuals()){
+                sum += Math.pow(i - mean,2);
+            }
+            let std = Math.sqrt(sum/len)
+            this.stds.push(std)
 
             // make copies
             let currentEval = this.population.evaluatedIndividuals.slice()
@@ -93,9 +122,7 @@ export default class GeneticAlgorithm {
 
             // Mutation
             for(let i = 0;i < offspring.length; i++) {
-                if(this.mutationProbability > Math.random()) {
-                    this.mutation.mutate(offspring[i])
-                }
+                this.mutation.mutate(offspring[i])
             }
 
             // New population 
@@ -105,11 +132,17 @@ export default class GeneticAlgorithm {
             this.population.evaluatedIndividuals = []
             this.population.bestIndividual = undefined
         }
-
+        this.elapsedTime = new Date().getTime() - start;
         this.population.decodePopulation()
         this.population.evaluateAndSetBest(this.function)
         return this.population.bestIndividual
     }
+
+    getBests(): number[]  { return this.bests }
+    getMeans(): number[] { return this.means }
+    getStds(): number[] { return this.stds } 
+    getElapsedTime(): number { return this.elapsedTime }
+    getBestsChromosome(): Chromosome[] { return this.bestChromosomes }
 }
 
 function gatherValues(indicesSublist: number[], list) {

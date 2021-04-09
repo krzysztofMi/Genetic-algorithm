@@ -13,6 +13,7 @@ export default class Population {
     //It's not chromosome because it's only has one value
     evaluatedIndividuals: number[] = []
     bestIndividual: Chromosome
+    bestValue: number
     interval: Interval
     extremeType: ExtremeType
 
@@ -39,7 +40,8 @@ export default class Population {
     public getDecodedIndividuals() { return this.decodedIndividuals }
     public getEvaluatedIndividuals() { return this.evaluatedIndividuals }
     public getBestIndividual() { return this.bestIndividual }
-
+    public getBestValue() { return this.bestValue }
+    public getLenght(): number { return this.individuals.length }
     public decodePopulation() {
         this.decodedIndividuals = this.individuals.map((it)=>{
            return new RealChromosome(
@@ -61,7 +63,8 @@ export default class Population {
     private setBestIndividual() {
         let indexOfBest = this.extremeType === ExtremeType.MAX 
                 ? this.getMaximumIndex() : this.getMinimumIndex()
-        this.bestIndividual = this.decodedIndividuals[indexOfBest] 
+        this.bestIndividual = this.decodedIndividuals[indexOfBest]
+        this.bestValue = this.evaluatedIndividuals[indexOfBest]
     }
 
     private getMaximumIndex(): number {
