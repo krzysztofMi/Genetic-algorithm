@@ -65,7 +65,7 @@ if(form == undefined) {
 
         let genetic = new GeneticAlgorithm(settings)
         let result = genetic.solve()
-        
+        form.remove()
         let answer = document.getElementById('answer')
         let interval = new Interval(settings['a'], settings['b'], settings['dx'])
         answer.innerHTML = ''
