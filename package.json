@@ -29,5 +29,8 @@
     "transformIgnorePatterns": [
       "node_modules/(?!variables/.*)"
     ]
+  },
+  "dependencies": {
+    "@amcharts/amcharts4": "^4.10.17"
   }
 }

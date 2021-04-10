@@ -22,6 +22,7 @@ export default function makeChart(epoch: number, y: number[], divName: string, x
     epochAxis.title.text = "epoch"
     let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.title.text = xName
+    
     // Create series
     let series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.valueY = "value";
