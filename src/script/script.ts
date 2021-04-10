@@ -7,9 +7,12 @@ import * as c from "../genetic/Crossover"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 import OnePointFlip from "../genetic/mutation/OnePointFlip"
 import BoundaryFlipBit from "../genetic/mutation/BoundaryFlipBit"
+import {bukinFunction} from "../utils/functions"
+import makeChart from "../script/chart";
+import Interval from "../genetic/Interval";
+import { saveToFile } from "../script/file";
 
 let form = document.getElementById("genetic")
-let container = document.getElementById("pcontainer")
 if(form == undefined) {
     console.log("Form is undefined")
 } else {
@@ -38,6 +41,7 @@ if(form == undefined) {
             "fun2": (it) => it[0] + 5 * it[1],
             "fun3": (it) => it[0] + 5 * it[1],
             "fun4": (it) => it[0] + 5 * it[1],
+            "bukin": bukinFunction
         }
 
         settings['variableCount'] = 2
@@ -46,7 +50,7 @@ if(form == undefined) {
         settings['crossoverMethod'] = dispatchTable[settings['crossoverMethod']]
         settings['selectionMethod'] = dispatchTable[settings['selectionMethod']]
         settings['minimize'] = dispatchTable[settings['minimize']]
-        // xD
+        // xD 
         settings['a'] = Number(settings['a'])
         settings['b'] = Number(settings['b'])
         settings['dx'] = Number(settings['dx'])
@@ -59,58 +63,19 @@ if(form == undefined) {
         settings['mutationProbability'] = Number(settings['mutationProbability'])
         settings['inversionProbability'] = Number(settings['inversionProbability'])
 
-        let settings_test = {}
-        settings_test['a'] = 1
-        settings_test['b']= 5
-        settings_test['dx']= 1
-        settings_test['populationSize']= 100
-        settings_test['variableCount']= 2
-        settings_test['epochCount']= 10
-        settings_test['function']= (it)=>it[0]*it[1]
-        settings_test['selectionMethod']= BestScoreSelection
-        settings_test['selectionMethodArg']= 0.4
-        settings_test['crossoverMethod']= c.crossover1
-        settings_test['mutationMethod']= TwoPointFlip
-        settings_test['eliteStrategyCount']= 2
-        settings_test['crossoverProbability']= 0.9
-        settings_test['mutationProbability']= 0.4
-        settings_test['inversionProbability']= 0.5
-        settings_test['minimize']= ExtremeType.MIN
-        console.assert(settings == settings_test, settings_test)
-        console.log(settings)
-
         let genetic = new GeneticAlgorithm(settings)
         let result = genetic.solve()
-        let jsonResult = JSON.stringify(result)
-
-        form.remove()
-
-        function addParagraph(txt) {
-            let paragraph = document.createElement('p');
-            let node = document.createTextNode(txt);
-            paragraph.appendChild(node);
-            container.appendChild(paragraph)
-        }
         
-        addParagraph("Result: " + jsonResult)
+        let answer = document.getElementById('answer')
+        let interval = new Interval(settings['a'], settings['b'], settings['dx'])
+        answer.innerHTML = ''
+        answer.innerHTML = "<p> x, y = " + result.getAllels() + " \
+         z = " + result.evaluate(settings['function'], interval) + " \
+         algorithm time: " + genetic.getElapsedTime() + "ms</p>"
 
-        let storage = localStorage.getItem("genetic")
-        if(storage) {
-            let li: string[] = JSON.parse(storage)
-
-            addParagraph("Previous results:")
-            addParagraph(storage)
-
-
-            li.push(jsonResult)
-            console.log(storage)
-            localStorage.setItem("genetic", JSON.stringify(li))
-        } else {
-            localStorage.setItem("genetic", JSON.stringify([jsonResult]))
-        }
+        makeChart(Number(settings['epochCount']), genetic.getBests(), "bestChart", "best value")
+        makeChart(Number(settings['epochCount']), genetic.getMeans(), "meanChart", "mean")
+        makeChart(Number(settings['epochCount']), genetic.getStds(), "stdChart", "standard devotion")
+        saveToFile(genetic.getBestsChromosome(), genetic.getBests())
     })
 }
-
-
-
-

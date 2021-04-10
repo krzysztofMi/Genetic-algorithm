@@ -12,27 +12,28 @@
     <div id="pcontainer" class="pcontainer" ></div>
     <form class="pcontainer" id="genetic" name="genetic">
         <label>a:</label>
-        <input type="text" id="a" name="a" value="1">
+        <input type="text" id="a" name="a" value="-15">
         <label>b:</label>
-        <input type="text" id="b" name="b" value="5">
+        <input type="text" id="b" name="b" value="15">
         <label>dx:</label>
-        <input type="text" id="dx" name="dx" value="1">
+        <input type="text" id="dx" name="dx" value="0.1">
         <label>population size:</label>
-        <input type="text" id="populationSize" name="populationSize" value="100">
+        <input type="text" id="populationSize" name="populationSize" value="1000">
         <label>epochCount:</label>
-        <input type="text" id="epochCount" name="epochCount" value="10">
+        <input type="text" id="epochCount" name="epochCount" value="100">
         <label>selectionMethodArg:</label>
         <input type="text" id="selectionMethodArg" name="selectionMethodArg" value="0.4">
         <label>eliteStrategyCount:</label>
         <input type="text" id="eliteStrategyCount" name="eliteStrategyCount" value="2">
         <label>crossoverProbability:</label>
-        <input type="text" id="crossoverProbability" name="crossoverProbability" value="0.9">
+        <input type="text" id="crossoverProbability" name="crossoverProbability" value="0.8">
         <label>mutationProbability:</label>
-        <input type="text" id="mutationProbability" name="mutationProbability" value="0.4">
+        <input type="text" id="mutationProbability" name="mutationProbability" value="0.1">
         <label>inversionProbability:</label>
-        <input type="text" id="inversionProbability" name="inversionProbability" value="0.5">
+        <input type="text" id="inversionProbability" name="inversionProbability" value="0.2">
         <label>Function:</label>
         <select id="function" name="function">
+            <option value="bukin">bukin</option>
             <option value="fun1">z = x * y</option>
             <option value="fun2">z = x + 5 * y</option>
             <option value="fun3">z = x + 5 * y</option>
@@ -65,6 +66,17 @@
         </select>
         <input type="submit" value="Solve!">
     </form>
+    </div>
+    <div id="answer" style="width:100%; text-align: center">
+        
+    </div>
+    <div>
+        <div style="width: 33%; height: 500px; display: inline-block;" id="bestChart">  
+        </div>
+        <div style="width: 33%; height: 500px; display: inline-block;" id="meanChart">
+        </div>
+        <div style="width: 33%; height: 500px; display: inline-block;" id="stdChart">
+        </div>
     </div>
 </body>
 </html>
