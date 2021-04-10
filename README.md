@@ -3,5 +3,7 @@ Genetic algorithm implementation to find an extreme value of two variables funct
 
 # How to run
 
-> npm start
-> open index.html (you probably need a server running (VSCode live server for example))
+* clone git repo: `git clone https://github.com/krzysztofMi/Genetic-algorithm.git`
+* inside repository folder `npm install` for download dependencies
+* `npm start`
+* open `index.html` (you probably need a server running (VSCode live server for example))
