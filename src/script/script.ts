@@ -75,7 +75,7 @@ if(form == undefined) {
 
         makeChart(Number(settings['epochCount']), genetic.getBests(), "bestChart", "best value")
         makeChart(Number(settings['epochCount']), genetic.getMeans(), "meanChart", "mean")
-        makeChart(Number(settings['epochCount']), genetic.getStds(), "stdChart", "standard devotion")
+        makeChart(Number(settings['epochCount']), genetic.getStds(), "stdChart", "standard deviation")
         saveToFile(genetic.getBestsChromosome(), genetic.getBests())
     })
 }
