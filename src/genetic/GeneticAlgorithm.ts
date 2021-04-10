@@ -7,6 +7,7 @@ import BinaryChromosome from "./chromosome/BinaryChromosome"
 import Chromosome from "./chromosome/Chromosome"
 import BestScoreSelection from "./selection/BestScoreSelection"
 import RealChromosome from "./chromosome/RealChromosome"
+import RouletteWheel from "./selection/RouletteWheel"
 
 export default class GeneticAlgorithm {
     
@@ -98,7 +99,6 @@ export default class GeneticAlgorithm {
             // Do selection
             let selected = this.selection.selectBest(currentEval)
             selected = gatherValues(selected[1], currentIdiv)
-            
             // Crossover
             let offspring = []
             let pairs = Math.floor(selected.length / 2)
@@ -119,14 +119,17 @@ export default class GeneticAlgorithm {
                 offspring.push(new BinaryChromosome(this.variableCount, children[0]))
                 offspring.push(new BinaryChromosome(this.variableCount, children[1]))
             }
-
             // Mutation
             for(let i = 0;i < offspring.length; i++) {
                 this.mutation.mutate(offspring[i])
             }
-
             // New population 
-            let newPopulation = offspring.concat(selected, eliteIndiv)
+            let newPopulation: BinaryChromosome[] = []
+            if(this.selection instanceof RouletteWheel) {
+                newPopulation = offspring.concat(eliteIndiv)
+            } else {
+                newPopulation = offspring.concat(selected, eliteIndiv)
+            }
             this.population.individuals = newPopulation 
             this.population.decodedIndividuals = []
             this.population.evaluatedIndividuals = []

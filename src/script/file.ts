@@ -10,7 +10,7 @@ export function saveToFile(chromosomes: Chromosome[], values: number[]) {
     var a = document.createElement("a"),
                 url = URL.createObjectURL(file);
     a.href = url;
-    a.download = "wyniki.txt";
+    a.download = "results.txt";
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {

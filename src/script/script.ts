@@ -73,10 +73,9 @@ if(form == undefined) {
          z = " + result.evaluate(settings['function'], interval) + " \
          algorithm time: " + genetic.getElapsedTime() + "ms</p>"
 
-        makeChart(Number(settings['epochCount']), genetic.getBests(), "bestChart")
-        makeChart(Number(settings['epochCount']), genetic.getMeans(), "meanChart")
-        makeChart(Number(settings['epochCount']), genetic.getStds(), "stdChart")
-
+        makeChart(Number(settings['epochCount']), genetic.getBests(), "bestChart", "best value")
+        makeChart(Number(settings['epochCount']), genetic.getMeans(), "meanChart", "mean")
+        makeChart(Number(settings['epochCount']), genetic.getStds(), "stdChart", "standard devotion")
         saveToFile(genetic.getBestsChromosome(), genetic.getBests())
     })
 }
