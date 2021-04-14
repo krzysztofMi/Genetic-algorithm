@@ -5,5 +5,5 @@ Genetic algorithm implementation to find an extreme value of two variables funct
 
 * clone git repo: `git clone https://github.com/krzysztofMi/Genetic-algorithm.git`
 * inside repository folder `npm install` for download dependencies
-* `npm start`
-* open `index.html` (you probably need a server running (VSCode live server for example))
+* `npm start` it will convert ts files to js files.
+* open `index.html` it should open without any servers you only need a browser which support js.
