@@ -1,79 +1,58 @@
-import Chromosome from "./chromosome/Chromosome"
-import { getRandomBitVector } from "../utils/bits"
-import Interval from "./Interval"
-import ExtremeType from "../enum/ExtremeType"
-import BinaryChromosome from "./chromosome/BinaryChromosome"
-import RealChromosome from "./chromosome/RealChromosome"
+import ChromosomeType from "../enum/ChromosomeType";
+import ExtremeType from "../enum/ExtremeType";
+import Chromosome from "./chromosome/Chromosome";
+import Interval from "./Interval";
 
 
-export default class Population {
+export default abstract class Population{
 
-    individuals:  BinaryChromosome[] = []
-    decodedIndividuals: RealChromosome[] = []
-    //It's not chromosome because it's only has one value
+    protected individuals: Chromosome[] = []
     evaluatedIndividuals: number[] = []
     bestIndividual: Chromosome
     bestValue: number
     interval: Interval
     extremeType: ExtremeType
 
-    constructor(
-        individualNumber: number,
-        geneNumber: number, 
-        interval: Interval,
-        extremeType: ExtremeType
-        ) {
+    constructor(interval: Interval,
+        extremeType: ExtremeType) {
             this.interval = interval
             this.extremeType = extremeType
-            this.generatePopulation(individualNumber, geneNumber, interval.getBits())
     }
 
-    public generatePopulation(individualNumber: number, geneNumber: number, bitsNumber: number) {
-        for(let i = 0; i<individualNumber; i++) {
-            let bits: number[] = getRandomBitVector(geneNumber, bitsNumber);
-            this.individuals.push(new BinaryChromosome(geneNumber, bits))
-        }
-    }
-
-    public getPopulationSize() {return this.individuals.length }
-    public getIndividuals() { return this.individuals }
-    public getDecodedIndividuals() { return this.decodedIndividuals }
     public getEvaluatedIndividuals() { return this.evaluatedIndividuals }
     public getBestIndividual() { return this.bestIndividual }
     public getBestValue() { return this.bestValue }
     public getLenght(): number { return this.individuals.length }
-    public decodePopulation() {
-        this.decodedIndividuals = this.individuals.map((it)=>{
-           return new RealChromosome(
-               it.getGeneNumbers(),
-            it.decode(this.interval))
-        })
-    }
+
+    public setIndividuals(individuals : Chromosome[]) {this.individuals = individuals}
+    public getIndividuals(): Chromosome[] { return this.individuals; }
 
     public evaluateAndSetBest(fun: Function) {
         this.evaluatePopulation(fun)
         this.setBestIndividual()
     }
 
-    public evaluatePopulation(fun: Function) {
-        this.evaluatedIndividuals = this.decodedIndividuals
+    protected evaluatePopulation(fun: Function) {
+        this.evaluatedIndividuals = this.individuals
             .map( it=> it.evaluate(fun) )
     }
 
-    private setBestIndividual() {
+    protected setBestIndividual() {
         let indexOfBest = this.extremeType === ExtremeType.MAX 
                 ? this.getMaximumIndex() : this.getMinimumIndex()
-        this.bestIndividual = this.decodedIndividuals[indexOfBest]
+        this.bestIndividual = this.individuals[indexOfBest]
         this.bestValue = this.evaluatedIndividuals[indexOfBest]
     }
 
-    private getMaximumIndex(): number {
+    protected getMaximumIndex(): number {
         return this.evaluatedIndividuals
                 .reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
     }
 
-    private getMinimumIndex() {
+    protected getMinimumIndex() {
         return this.evaluatedIndividuals
                 .reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0);    
     }
+
+    abstract generatePopulation(individualNumber: number, geneNumber: number)
 }
