@@ -10,7 +10,7 @@ import RealChromosome from "../genetic/chromosome/RealChromosome"
 import * as c from "../genetic/Crossover"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 import BitFlipMutation from "../genetic/mutation/BitFilpMutation"
-import GeneticAlgorithm from "../genetic/GeneticAlgorithm"
+import EvolutionaryAlgorithm from "../genetic/EvolutionaryAlgorithm"
 
 
 test("Full algorithm", () => {
@@ -31,13 +31,13 @@ test("Full algorithm", () => {
     settings['mutationProbability']= 0.4
     settings['inversionProbability']= 0.5
     settings['minimize']= ExtremeType.MIN
-    let genetic = new GeneticAlgorithm(settings)
+    let genetic = new EvolutionaryAlgorithm(settings)
     let result = genetic.solve()
     expect(result.getAllels()).toEqual([1,1])
 
 
     settings['minimize'] = ExtremeType.MAX
-    genetic = new GeneticAlgorithm(settings)
+    genetic = new EvolutionaryAlgorithm(settings)
     result = genetic.solve()
     console.log(result)
 })

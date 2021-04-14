@@ -8,9 +8,15 @@ import Chromosome from "./chromosome/Chromosome"
 import BestScoreSelection from "./selection/BestScoreSelection"
 import RealChromosome from "./chromosome/RealChromosome"
 import RouletteWheel from "./selection/RouletteWheel"
+import ChromosomeType from "../enum/ChromosomeType"
+import BinaryPopulation from "./BinaryPopulation"
 
-export default class GeneticAlgorithm {
+// I changed name bacause when a genetic algorithm works on real population, not binary then 
+// it is an evoulutionary algorithm. A genetic algorithm works on binary population.
+// The algorithm works on binary and real population, It depends on settings.
+export default class EvolutionaryAlgorithm {
     
+    private chromosomeType: ChromosomeType
     private interval: Interval
     private population: Population
     private selection: Selection
@@ -39,7 +45,7 @@ export default class GeneticAlgorithm {
         settings: Object
     ) {
         this.interval = new Interval(settings['a'], settings['b'], settings['dx'])
-        this.population = new Population(
+        this.population = new BinaryPopulation(
             settings['populationSize'],
             settings['variableCount'], 
             this.interval, 
@@ -68,7 +74,6 @@ export default class GeneticAlgorithm {
         this.bestChromosomes = []
         const start = new Date().getTime();
         for(let epoch = 0; epoch < this.epochCount; epoch++) {
-            this.population.decodePopulation()
             this.population.evaluateAndSetBest(this.function)
             // set chart variables
             this.bests.push(this.population.getBestValue())
@@ -86,7 +91,7 @@ export default class GeneticAlgorithm {
 
             // make copies
             let currentEval = this.population.evaluatedIndividuals.slice()
-            let currentIdiv = this.population.individuals.slice()
+            let currentIdiv = this.population.getIndividuals().slice()
 
             // select the elites, they straight up get copied to new generation
             let elite = this.eliteStrategySelection.selectBest(currentEval)
@@ -130,13 +135,11 @@ export default class GeneticAlgorithm {
             } else {
                 newPopulation = offspring.concat(selected, eliteIndiv)
             }
-            this.population.individuals = newPopulation 
-            this.population.decodedIndividuals = []
+            this.population.setIndividuals(newPopulation)
             this.population.evaluatedIndividuals = []
             this.population.bestIndividual = undefined
         }
         this.elapsedTime = new Date().getTime() - start;
-        this.population.decodePopulation()
         this.population.evaluateAndSetBest(this.function)
         return this.population.bestIndividual
     }

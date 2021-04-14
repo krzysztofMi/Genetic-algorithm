@@ -1,4 +1,4 @@
-import GeneticAlgorithm from "../genetic/GeneticAlgorithm";
+
 import ExtremeType from "../enum/ExtremeType"
 import BestScoreSelection from "../genetic/selection/BestScoreSelection"
 import TournamentSelection from "../genetic/selection/TournamentSelection"
@@ -11,6 +11,7 @@ import {bukinFunction} from "../utils/functions"
 import makeChart from "../script/chart";
 import Interval from "../genetic/Interval";
 import { saveToFile } from "../script/file";
+import EvolutionaryAlgorithm from "../genetic/EvolutionaryAlgorithm"
 
 let form = document.getElementById("genetic")
 if(form == undefined) {
@@ -63,7 +64,7 @@ if(form == undefined) {
         settings['mutationProbability'] = Number(settings['mutationProbability'])
         settings['inversionProbability'] = Number(settings['inversionProbability'])
 
-        let genetic = new GeneticAlgorithm(settings)
+        let genetic = new EvolutionaryAlgorithm(settings)
         let result = genetic.solve()
         form.remove()
         let answer = document.getElementById('answer')
@@ -76,6 +77,6 @@ if(form == undefined) {
         makeChart(Number(settings['epochCount']), genetic.getBests(), "bestChart", "best value")
         makeChart(Number(settings['epochCount']), genetic.getMeans(), "meanChart", "mean")
         makeChart(Number(settings['epochCount']), genetic.getStds(), "stdChart", "standard deviation")
-        saveToFile(genetic.getBestsChromosome(), genetic.getBests())
+        saveToFile(genetic.getBestsChromosome(), genetic.getBests(), genetic.getElapsedTime())
     })
 }

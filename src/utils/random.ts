@@ -1,5 +1,13 @@
 export function getRandomInt(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(getRandom(min, max));
+}
+
+// This random number geberator, generate numbers beetween (min, max)
+export function getRandom(min:number, max: number): number {
+    let x = (Math.random() * (max - min + 1) + min)
+    // without this it's generate number in interval (min, max+1)
+    x = x > max ? max: x
+    return x
 }
 
 export function getRandomIndexs(n: number) {
