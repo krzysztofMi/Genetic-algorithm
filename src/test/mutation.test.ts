@@ -7,6 +7,9 @@ import Mutation from "../genetic/mutation/Mutation"
 import TwoPointFlip from "../genetic/mutation/TwoPointFlip"
 import OnePointFlip from "../genetic/mutation/OnePointFlip"
 import Inversion from "../genetic/mutation/Inversion"
+import RealChromosome from "../genetic/chromosome/RealChromosome"
+import UnifromMutation from "../genetic/mutation/UniformMutation"
+import Interval from "../genetic/Interval"
 
 test("Check if probability value is checked", ()=> {
     let fcn = function(){new BoundaryFlip(10)};
@@ -110,6 +113,16 @@ test("inversion operator test", () => {
     // let chromosome = new BinaryChromosome(2, [1, 1, 0, 0, 1, 0, 1, 0, 0, 1])
     // mut.mutate(chromosome)
     // console.log(chromosome.getAllels())
+})
+
+test("uniform mutatuion test", () => {
+    let interval = new Interval(-15, 15, 0.01)
+    let um: Mutation = new UnifromMutation(1, interval)
+    let xd: Chromosome = new RealChromosome(2, [10, 12])
+    const all1 =  Object.assign([], xd.getAllels())
+    um.mutate(xd)
+    let all2 = xd.getAllels()
+    expect((all1[0] - all2[0]) + (all1[1] - all2[1])).not.toEqual(0)
 })
 
 function getArraySum(array: number[]) {
