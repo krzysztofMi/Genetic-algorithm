@@ -19,7 +19,6 @@ test("Allels should be between -15 and 15", () => {
     for(let indiv of population.getIndividuals()) {
         let x = indiv.getAllels()[0]
         let y = indiv.getAllels()[1]
-        console.log(x, y)
         testLessGreaterThan(x, interval.getB())
         testLessGreaterThan(y, interval.getB())
     }

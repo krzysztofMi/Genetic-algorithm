@@ -1,7 +1,25 @@
 import { getRandomInt, randomIndexes } from "../utils/random"
 import * as c from "../genetic/Crossover"
+import { Crossover } from "../genetic/Crossover"
 
-test("Test homogenous crossover", ()=> {
+test("Real chromosome arithmetic crossover", ()=> {
+    let a = [2, 3]
+    let b = [4, 8]
+    let k = 0.25
+    let result = Crossover.real.arithmetic(a,b,k)
+    
+    expect(result).toEqual([[3.5,6.75], [2.5, 4.25]])
+})
+
+test("Real chromosome heuristic crossover", ()=> {
+    let a = [2, 3]
+    let b = [4, 8]
+    let k = 0.25
+    let result = Crossover.real.heuristic(a,b,k)
+    expect(result).toEqual([2.5,4.25])
+})
+
+test("Test homogenous crossover", () => {
     let A = [1,1,0,1,1,0,0,1]
     let B = [0,1,0,1,1,1,1,1]
     let child = c.crossoverHomogenous(A,B)
@@ -9,7 +27,7 @@ test("Test homogenous crossover", ()=> {
     expect(child[1]).toEqual([0,1,0,1,1,0,1,1])
 })
 
-test("Test N point crossover", ()=> {
+test("Test N point crossover", () => {
     let A = [1,1,0,1,1,0,0,1]
     let B = [0,1,0,1,1,1,1,1]
     // ======== 1 cross

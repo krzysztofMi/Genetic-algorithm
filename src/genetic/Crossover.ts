@@ -2,6 +2,37 @@ import { getRandomInt, randomIndexes } from "../utils/random"
 
 let swapSide = false
 
+export const Crossover = {
+    real: {
+        arithmetic: function (a: number[], b: number[], k: number = undefined): [[number,number], [number,number]]{
+            if(k == undefined) k = Math.random()
+        
+            let x1 = k * a[0] + (1-k) * b[0]
+            let y1 = k * a[1] + (1-k) * b[1]
+        
+            let x2 = (1 - k) * a[0] + k * b[0]
+            let y2 = (1 - k) * a[1] + k * b[1]
+        
+            return [[x1,y1], [x2,y2]]
+        },
+
+        heuristic: function(a: number[], b: number[], k: number = undefined): number[]{
+            if(k == undefined) k = Math.random()
+            let x1 = k * (b[0] - a[0]) + a[0]
+            let y1 = k * (b[1] - a[1]) + a[1]
+            return [x1,y1]
+        }
+    },
+    binary: {
+        homogenous: crossoverHomogenous,
+        onePoint: crossover1,
+        twoPoint: crossover2,
+        threePoint: crossover3,
+        NPoint: crossoverN,
+        swapSides: swapCrossoverSide
+    }
+}
+
 export function swapCrossoverSide() {
     swapSide = !swapSide
 }
