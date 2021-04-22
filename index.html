@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,71 +8,80 @@
     <script src="dist/scripts.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
-    <div id="pcontainer" class="pcontainer" ></div>
-    <form class="pcontainer" id="genetic" name="genetic">
-        <label>a:</label>
-        <input type="text" id="a" name="a" value="-15">
-        <label>b:</label>
-        <input type="text" id="b" name="b" value="15">
-        <label>dx:</label>
-        <input type="text" id="dx" name="dx" value="0.1">
-        <label>population size:</label>
-        <input type="text" id="populationSize" name="populationSize" value="1000">
-        <label>epochCount:</label>
-        <input type="text" id="epochCount" name="epochCount" value="100">
-        <label>selectionMethodArg:</label>
-        <input type="text" id="selectionMethodArg" name="selectionMethodArg" value="0.4">
-        <label>eliteStrategyCount:</label>
-        <input type="text" id="eliteStrategyCount" name="eliteStrategyCount" value="2">
-        <label>crossoverProbability:</label>
-        <input type="text" id="crossoverProbability" name="crossoverProbability" value="0.8">
-        <label>mutationProbability:</label>
-        <input type="text" id="mutationProbability" name="mutationProbability" value="0.1">
-        <label>inversionProbability:</label>
-        <input type="text" id="inversionProbability" name="inversionProbability" value="0.2">
-        <label>Function:</label>
-        <select id="function" name="function">
-            <option value="bukin">bukin</option>
-            <option value="fun1">z = x * y</option>
-            <option value="fun2">z = x + 5 * y</option>
-            <option value="fun3">z = x + 5 * y</option>
-            <option value="fun4">z = x + 5 * y</option>
-        </select>
-        <label>selectionMethod:</label>
-        <select id="selectionMethod" name="selectionMethod">
-            <option value="bestScoreSelection">bestScore</option>
-            <option value="tournamentSelection">tournament</option>
-            <option value="rouletteSelection">roulette</option>
-        </select>
-        <label>crossoverMethod:</label>
-        <select id="crossoverMethod" name="crossoverMethod">
-            <option value="onePointCrossover">onePoint</option>
-            <option value="twoPointCrossover">twoPoint</option>
-            <option value="threePointCrossover">threePoint</option>
-            <option value="homogenousCrossover">homogenous</option>
-        </select>
-        <label>mutationMethod:</label>
-        <select id="mutationMethod" name="mutationMethod">
-            <option value="twoPointFlip">twoPointFlip</option>
-            <option value="onePointFlip">onePointFlip</option>
-            <option value="boundaryFlipBit">boundaryFlipBit</option>
-            <!-- <option value="inversion">inversion</option> -->
-        </select>
-        <label>minimize?:</label>
-        <select id="minimize" name="minimize">
-            <option value="minimize">minimize</option>
-            <option value="maximize">maximize</option>
-        </select>
-        <input type="submit" value="Solve!">
-    </form>
+        <div id="pcontainer" class="pcontainer"></div>
+        <form class="pcontainer" id="genetic" name="genetic">
+            <label>a:</label>
+            <input type="text" id="a" name="a" value="-15">
+            <label>b:</label>
+            <input type="text" id="b" name="b" value="15">
+            <label>dx:</label>
+            <input type="text" id="dx" name="dx" value="0.1">
+            <label>population size:</label>
+            <input type="text" id="populationSize" name="populationSize" value="1000">
+            <label>epochCount:</label>
+            <input type="text" id="epochCount" name="epochCount" value="100">
+            <label>selectionMethodArg:</label>
+            <input type="text" id="selectionMethodArg" name="selectionMethodArg" value="0.4">
+            <label>eliteStrategyCount:</label>
+            <input type="text" id="eliteStrategyCount" name="eliteStrategyCount" value="2">
+            <label>crossoverProbability:</label>
+            <input type="text" id="crossoverProbability" name="crossoverProbability" value="0.8">
+            <label>mutationProbability:</label>
+            <input type="text" id="mutationProbability" name="mutationProbability" value="0.1">
+            <label>inversionProbability:</label>
+            <input type="text" id="inversionProbability" name="inversionProbability" value="0.2">
+            <label>Chromosome encoding:</label>
+            <select id="chromosomeEncoding" name="chromosomeEncoding">
+                <option value="float">Floating point</option>
+                <option value="binary">Binary</option>
+            </select>
+            <label>Function:</label>
+            <select id="function" name="function">
+                <option value="bukin">bukin</option>
+                <option value="fun1">z = x * y</option>
+                <option value="fun2">z = x + 5 * y</option>
+                <option value="fun3">z = x + 5 * y</option>
+                <option value="fun4">z = x + 5 * y</option>
+            </select>
+            <label>selectionMethod:</label>
+            <select id="selectionMethod" name="selectionMethod">
+                <option value="bestScoreSelection">bestScore</option>
+                <option value="tournamentSelection">tournament</option>
+                <option value="rouletteSelection">roulette</option>
+            </select>
+            <label>crossoverMethod:</label>
+            <select id="crossoverMethod" name="crossoverMethod">
+                <option value="onePointCrossover">onePoint</option>
+                <option value="twoPointCrossover">twoPoint</option>
+                <option value="threePointCrossover">threePoint</option>
+                <option value="homogenousCrossover">homogenous</option>
+                <option value="arithmeticCrossover">arithmetic</option>
+                <option value="heuristicCrossover">heuristic</option>
+            </select>
+            <label>mutationMethod:</label>
+            <select id="mutationMethod" name="mutationMethod">
+                <option value="twoPointFlip">twoPointFlip</option>
+                <option value="onePointFlip">onePointFlip</option>
+                <option value="boundaryFlipBit">boundaryFlipBit</option>
+                <option value="uniformMutation">uniform</option>
+                <!-- <option value="inversion">inversion</option> -->
+            </select>
+            <label>minimize?:</label>
+            <select id="minimize" name="minimize">
+                <option value="minimize">minimize</option>
+                <option value="maximize">maximize</option>
+            </select>
+            <input type="submit" value="Solve!">
+        </form>
     </div>
     <div id="answer" style="width:100%; text-align: center">
-        
+
     </div>
     <div>
-        <div style="width: 50%; margin: auto; height: 500px;" id="bestChart">  
+        <div style="width: 50%; margin: auto; height: 500px;" id="bestChart">
         </div>
         <div style="width: 50%; margin: auto; height: 500px;" id="meanChart">
         </div>
@@ -79,4 +89,5 @@
         </div>
     </div>
 </body>
+
 </html>
