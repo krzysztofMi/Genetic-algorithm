@@ -1,4 +1,5 @@
 import Population from "./Population"
+import RealPopulation from "./RealPopulation"
 import Interval from "./Interval"
 import ExtremeType from "../enum/ExtremeType"
 import Mutation from "./mutation/Mutation"
@@ -15,7 +16,7 @@ import BinaryPopulation from "./BinaryPopulation"
 // it is an evoulutionary algorithm. A genetic algorithm works on binary population.
 // The algorithm works on binary and real population, It depends on settings.
 export default class EvolutionaryAlgorithm {
-    
+
     private chromosomeType: ChromosomeType
     private interval: Interval
     private population: Population
@@ -37,7 +38,7 @@ export default class EvolutionaryAlgorithm {
 
     //Timer
     private elapsedTime: number = 0
-    
+
     //For save to file
     private bestChromosomes: Chromosome[] = []
 
@@ -45,16 +46,26 @@ export default class EvolutionaryAlgorithm {
         settings: Object
     ) {
         this.interval = new Interval(settings['a'], settings['b'], settings['dx'])
-        this.population = new BinaryPopulation(
-            settings['populationSize'],
-            settings['variableCount'], 
-            this.interval, 
-            settings['minimize'])
+        this.chromosomeType = settings['chromosomeEncoding']
+        if (this.chromosomeType == ChromosomeType.Binary) {
+            this.population = new BinaryPopulation(
+                settings['populationSize'],
+                settings['variableCount'],
+                this.interval,
+                settings['minimize'])
+        } else {
+            this.population = new RealPopulation(
+                settings['populationSize'],
+                settings['variableCount'],
+                this.interval,
+                settings['minimize'])
+
+        }
 
         this.selection = new settings['selectionMethod'](settings['minimize'], settings['selectionMethodArg'])
-        this.mutation = new settings['mutationMethod'](settings['inversionProbability'])
+        this.mutation = new settings['mutationMethod'](settings['inversionProbability'], this.population.interval)
         this.crossover = settings['crossoverMethod']
-        
+
         this.variableCount = settings['variableCount']
         this.function = settings['function']
         this.epochCount = settings['epochCount']
@@ -62,7 +73,7 @@ export default class EvolutionaryAlgorithm {
         this.crossoverProbability = settings['crossoverProbability']
         this.mutation.setProbability(settings['mutationProbability'])
 
-        let fraction =  settings['eliteStrategyCount'] / settings['populationSize']
+        let fraction = settings['eliteStrategyCount'] / settings['populationSize']
         console.assert(fraction >= 0 && fraction <= 1)
         this.eliteStrategySelection = new BestScoreSelection(settings['minimize'], fraction)
     }
@@ -73,20 +84,20 @@ export default class EvolutionaryAlgorithm {
         this.stds = []
         this.bestChromosomes = []
         const start = new Date().getTime();
-        for(let epoch = 0; epoch < this.epochCount; epoch++) {
+        for (let epoch = 0; epoch < this.epochCount; epoch++) {
             this.population.evaluateAndSetBest(this.function)
             // set chart variables
             this.bests.push(this.population.getBestValue())
-            let sum = this.population.getEvaluatedIndividuals().reduce((a, b)=>a+b, 0)
+            let sum = this.population.getEvaluatedIndividuals().reduce((a, b) => a + b, 0)
             let len = this.population.getLenght()
-            let mean = sum/len
+            let mean = sum / len
             this.means.push(mean)
             this.bestChromosomes.push(this.population.getBestIndividual())
             sum = 0
-            for(let i of this.population.getEvaluatedIndividuals()){
-                sum += Math.pow(i - mean,2);
+            for (let i of this.population.getEvaluatedIndividuals()) {
+                sum += Math.pow(i - mean, 2);
             }
-            let std = Math.sqrt(sum/len)
+            let std = Math.sqrt(sum / len)
             this.stds.push(std)
 
             // make copies
@@ -107,30 +118,34 @@ export default class EvolutionaryAlgorithm {
             // Crossover
             let offspring = []
             let pairs = Math.floor(selected.length / 2)
-            for(let i = 0; i < pairs; i++) {
+            for (let i = 0; i < pairs; i++) {
                 let pair = i * 2
                 let guy = selected[pair].getAllels()
-                let girl = selected[pair+1].getAllels()
-                
+                let girl = selected[pair + 1].getAllels()
+
                 // Sometimes copy the individuals fully from parents
                 // Mostly crossover the parents to create modified children
                 let children
-                if(this.crossoverProbability > Math.random()) {
+                if (this.crossoverProbability > Math.random()) {
                     children = this.crossover(guy, girl)
                 } else {
                     children = [guy.slice(), girl.slice()]
                 }
-
-                offspring.push(new BinaryChromosome(this.variableCount, children[0]))
-                offspring.push(new BinaryChromosome(this.variableCount, children[1]))
+                if (this.chromosomeType == ChromosomeType.Binary) {
+                    offspring.push(new BinaryChromosome(this.variableCount, children[0]))
+                    offspring.push(new BinaryChromosome(this.variableCount, children[1]))
+                } else {
+                    offspring.push(new RealChromosome(this.variableCount, children[0]))
+                    offspring.push(new RealChromosome(this.variableCount, children[1]))
+                }
             }
             // Mutation
-            for(let i = 0;i < offspring.length; i++) {
+            for (let i = 0; i < offspring.length; i++) {
                 this.mutation.mutate(offspring[i])
             }
             // New population 
-            let newPopulation: BinaryChromosome[] = []
-            if(this.selection instanceof RouletteWheel) {
+            let newPopulation = []
+            if (this.selection instanceof RouletteWheel) {
                 newPopulation = offspring.concat(eliteIndiv)
             } else {
                 newPopulation = offspring.concat(selected, eliteIndiv)
@@ -144,16 +159,16 @@ export default class EvolutionaryAlgorithm {
         return this.population.bestIndividual
     }
 
-    getBests(): number[]  { return this.bests }
+    getBests(): number[] { return this.bests }
     getMeans(): number[] { return this.means }
-    getStds(): number[] { return this.stds } 
+    getStds(): number[] { return this.stds }
     getElapsedTime(): number { return this.elapsedTime }
     getBestsChromosome(): Chromosome[] { return this.bestChromosomes }
 }
 
 function gatherValues(indicesSublist: number[], list) {
     let result = []
-    for(let i = 0; i < indicesSublist.length; i++) {
+    for (let i = 0; i < indicesSublist.length; i++) {
         let index = indicesSublist[i]
         let val = list[index]
         result.push(val)
@@ -164,7 +179,7 @@ function gatherValues(indicesSublist: number[], list) {
 
 function removeValues(indicesSublist, list) {
     let result = []
-    for(let i = 0; i < indicesSublist.length; i++) {
+    for (let i = 0; i < indicesSublist.length; i++) {
         let index = indicesSublist[i]
         list.splice(index, 1)
     }
