@@ -121,7 +121,6 @@ export default class EvolutionaryAlgorithm {
             while(offspring.length < this.population.getLenght() - eliteIndiv.length){
                 let pair1 = getRandomInt(0, selected.length-1)
                 let pair2 = getRandomInt(0, selected.length-1)
-                console.log(selected)
                 let guy = selected[pair1].getAllels()
                 let girl = selected[pair2].getAllels()
 
