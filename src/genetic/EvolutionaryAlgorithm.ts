@@ -11,6 +11,7 @@ import RealChromosome from "./chromosome/RealChromosome"
 import RouletteWheel from "./selection/RouletteWheel"
 import ChromosomeType from "../enum/ChromosomeType"
 import BinaryPopulation from "./BinaryPopulation"
+import { getRandomInt } from "../utils/random"
 
 // I changed name bacause when a genetic algorithm works on real population, not binary then 
 // it is an evoulutionary algorithm. A genetic algorithm works on binary population.
@@ -117,16 +118,19 @@ export default class EvolutionaryAlgorithm {
             selected = gatherValues(selected[1], currentIdiv)
             // Crossover
             let offspring = []
-            let pairs = Math.floor(selected.length / 2)
-            for (let i = 0; i < pairs; i++) {
-                let pair = i * 2
-                let guy = selected[pair].getAllels()
-                let girl = selected[pair + 1].getAllels()
+            while(offspring.length < this.population.getLenght() - eliteIndiv.length){
+                let pair1 = getRandomInt(0, selected.length-1)
+                let pair2 = getRandomInt(0, selected.length-1)
+                console.log(selected)
+                let guy = selected[pair1].getAllels()
+                let girl = selected[pair2].getAllels()
 
                 // Sometimes copy the individuals fully from parents
                 // Mostly crossover the parents to create modified children
                 let children
+                let isMutate = false
                 if (this.crossoverProbability > Math.random()) {
+                    isMutate = true
                     children = this.crossover(guy, girl)
                 } else {
                     children = [guy.slice(), girl.slice()]
@@ -135,21 +139,22 @@ export default class EvolutionaryAlgorithm {
                     offspring.push(new BinaryChromosome(this.variableCount, children[0]))
                     offspring.push(new BinaryChromosome(this.variableCount, children[1]))
                 } else {
-                    offspring.push(new RealChromosome(this.variableCount, children[0]))
-                    offspring.push(new RealChromosome(this.variableCount, children[1]))
+                    if(this.crossover.name == 'heuristic' && isMutate){
+                        offspring.push(new RealChromosome(this.variableCount, children))
+                    }else {
+                        offspring.push(new RealChromosome(this.variableCount, children[0]))
+                        offspring.push(new RealChromosome(this.variableCount, children[1]))
+                    }
                 }
             }
+            
             // Mutation
             for (let i = 0; i < offspring.length; i++) {
                 this.mutation.mutate(offspring[i])
             }
             // New population 
             let newPopulation = []
-            if (this.selection instanceof RouletteWheel) {
-                newPopulation = offspring.concat(eliteIndiv)
-            } else {
-                newPopulation = offspring.concat(selected, eliteIndiv)
-            }
+            newPopulation = offspring.concat(eliteIndiv)
             this.population.setIndividuals(newPopulation)
             this.population.evaluatedIndividuals = []
             this.population.bestIndividual = undefined
