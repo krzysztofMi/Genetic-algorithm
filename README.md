@@ -11,4 +11,4 @@ Genetic algorithm implementation to find an extreme value of two variables funct
 
 # Python Deap
 
-In pythonDeap folder is a genetic algorithm implementation in Python which use the Python Dapl library to build a genetic algorithm.
+In pythonDeap folder is a genetic algorithm implementation in Python which use the Python Deap library to build a genetic algorithm.
