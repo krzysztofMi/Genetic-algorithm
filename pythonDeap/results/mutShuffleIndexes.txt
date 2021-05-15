@@ -1,0 +1,10 @@
+
+Najlepsze znalezione rozwiazanie 0.01589286387874985
+Wartosc srednia najlepszych rozwiazadn 0.10108571595874687
+Odchylenie standardowe najlepszych rozwiazadn 0.04662329373073246
+Generacja, w której najszybciej znaleziono optymalne rozwiazanie 31
+Najlepsze rozwiazanie znalezione najszybciej 0.18930655834553448
+srednia generacji, w których po raz pierwszy znaleziono najlepsze rozwiazanie 42.54
+Odchylenie standardowe generacji, w których po raz pierwszy znaleziono najlepsze rozwiazanie 6.356760181098545
+sredni czas dzia³ania algorytmu [ms] 65.3376012134552ms
+Odchylenie standardowe czasów dzia³ania algorytmu [ms] 430.3950161710926ms

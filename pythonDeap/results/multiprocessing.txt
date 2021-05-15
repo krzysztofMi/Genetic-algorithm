@@ -1,0 +1,10 @@
+multiprocessing
+Najlepsze znalezione rozwiazanie 0.12811809540842312
+Wartosc srednia najlepszych rozwiazan0.12811809540842312
+Odchylenie standardowe najlepszych rozwiazan 0.0
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 44
+Najlepsze rozwiazanie znalezione najszybciej 0.12811809540842312
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 44.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 0.0
+sredni czas dzialania algorytmu [ms] 56.44919776916504ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 0.0ms

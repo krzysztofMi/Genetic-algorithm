@@ -1,10 +1,12 @@
 from deap import base
 from deap import creator
 from deap import tools
+import multiprocessing
 import matplotlib.pyplot as plt
 import random
 import numpy as np
 import time
+import sys
 
 
 def individual(icls):
@@ -40,14 +42,16 @@ def cx_heuristic(ind1, ind2):
 
 
 # It is in function for purpose to clean toolbox after each algorithm pass.
-def getToolbox():
+def getToolbox(select, mutation, pool):
     toolbox = base.Toolbox()
+    if __name__ == "__main__":
+        toolbox.register("map", pool.map) 
     toolbox.register('individual',individual, creator.Individual)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("evaluate", fitness_function)
-    toolbox.register("select", tools.selTournament, tournsize=5)
+    toolbox.register("select", **select)
     toolbox.register("mate", cx_arithmetic)
-    toolbox.register("mutate", tools.mutGaussian, mu=5, sigma=10, indpb=1)
+    toolbox.register("mutate", **mutation)
     return toolbox
 
 
@@ -60,10 +64,9 @@ probabilityCrossover = 0.8
 numberIteration=100
 
 
-def algorithm(printBest = False):
-    toolbox = getToolbox()
+def algorithm(toolbox, printBest = False):
     pop = toolbox.population(n=sizePopulation)
-    fitnesses = list(map(toolbox.evaluate, pop))
+    fitnesses = list(toolbox.map(toolbox.evaluate, pop))
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
     bestValues = []
@@ -99,7 +102,7 @@ def algorithm(printBest = False):
                 del mutant.fitness.values
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
+        fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
         # print(" Evaluated %i individuals" % len(invalid_ind))
@@ -135,44 +138,89 @@ def plot_data(i, title, y_label, data):
     plt.title(title)
     plt.ylabel(y_label)
 
-def make_plots():
-    bestValues, means, stds, _ = algorithm(True)
+def make_plots(name, toolbox):
+    bestValues, means, stds, _ = algorithm(toolbox, True)
     plot_data(1, "Best values in epochs", "best value", bestValues)
     plot_data(2, "Means in epochs", "mean", means)
     plot_data(3, "Standard deviations in epochs", "std", stds)
     plt.xlabel("epoch")
     plt.tight_layout()
-    plt.show()
+    plt.savefig(name + '_plot.png')
+    plt.clf()
+    
 
-def make_test(testSize):
+def make_test(name, testSize, toolbox):
+    f = open(name + ".txt", "a")
+
     minims = []
     firstGen = []
     times = []
-    for _ in range(testSize):
-        bestValues, _, _, duration = algorithm()
+    for i in range(testSize):
+        bestValues, _, _, duration = algorithm(toolbox)
         minims.append(np.min(bestValues))
         firstGen.append(bestValues.index(np.min(bestValues)))
         times.append(duration)
-    print("\nNajlepsze znalezione rozwiązanie")
-    print(np.min(minims))
-    print("\nWartość średnia najlepszych rozwiązań"),
-    print(np.mean(minims))
-    print("\nOdchylenie standardowe najlepszych rozwiązań"),
-    print(np.std(minims))
-    print("\nGeneracja, w której najszybciej znaleziono optymalne rozwiązanie")
-    print(np.min(firstGen))
-    print("\nNajlepsze rozwiązanie znalezione najszybciej")
-    print(minims[np.argmin(firstGen)])
-    print("\nŚrednia generacji, w których po raz pierwszy znaleziono najlepsze rozwiązanie")
-    print(np.mean(firstGen))
-    print("\nOdchylenie standardowe generacji, w których po raz pierwszy znaleziono najlepsze rozwiązanie")
-    print(np.std(firstGen))
-    print("\nŚredni czas działania algorytmu [ms]")
-    print(np.mean(times), "ms")
-    print("\nOdchylenie standardowe czasów działania algorytmu [ms]")
-    print(np.std(times), "ms")
+        print(f"{name}:{i + 1}/{testSize}")
+    f.write(name)
+    f.write("\nNajlepsze znalezione rozwiazanie ")
+    f.write(str(np.min(minims)))
+    f.write("\nWartosc srednia najlepszych rozwiazan" )
+    f.write(str(np.mean(minims)))
+    f.write("\nOdchylenie standardowe najlepszych rozwiazan " )
+    f.write(str(np.std(minims)))
+    f.write("\nGeneracja, w ktorej najszybciej znaleziono optymalne rozwiazanie ")
+    f.write(str(np.min(firstGen)))
+    f.write("\nNajlepsze rozwiazanie znalezione najszybciej ")
+    f.write(str(minims[np.argmin(firstGen)]))
+    f.write("\nsrednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie ")
+    f.write(str(np.mean(firstGen)))
+    f.write("\nOdchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie ")
+    f.write(str(np.std(firstGen)))
+    f.write("\nsredni czas dzialania algorytmu [ms] ")
+    f.write(str(np.mean(times)) + "ms")
+    f.write("\nOdchylenie standardowe czasow dzialania algorytmu [ms] ")
+    f.write(str(np.std(times)) + "ms")
+    f.close()
 
+selection = [
+    {"args": {"function": tools.selTournament, "tournsize":5}, "name": "selTournament"},
+    {"args": {"function": tools.selRandom}, "name": "selRandom"},
+    {"args": {"function": tools.selBest}, "name": "selBest"},
+    {"args": {"function": tools.selWorst}, "name": "selWorst"},
+    {"args": {"function": tools.selRoulette}, "name": "selRoulette"},
+    {"args": {"function": tools.selTournamentDCD, "tournsize":5}, "name": "selTournament"},
 
-make_plots()
-make_test(100)
+    {"args": {"function": tools.selSPEA2}, "name": "selSPEA2"},
+]
 
+mutation = [
+    {"args": {"function": tools.mutGaussian, "mu": 0.0, "sigma": 0.2, "indpb": 0.2}, "name": "mutGaussian"},
+    {"args": {"function": tools.mutShuffleIndexes,  "indpb": 0.2}, "name": "mutShuffleIndexes"},
+    {"args": {"function": tools.mutFlipBit,  "indpb": 0.2}, "name": "mutFlipBit"},
+    {"args": {"function": tools.mutUniformInt, "low": 10, "up": 10, "indpb": 0.2}, "name": "mutUniformInt"},
+]
+
+for i in mutation:
+    newToolbox = lambda x: getToolbox(selection[0]['args'], x['args'], pool)
+    toolbox = newToolbox(i)
+    make_plots(i["name"], toolbox)
+    toolbox = newToolbox(i)
+    make_test(i["name"], 50, toolbox)
+
+pool = None
+if __name__ == "__main__":
+    durations = []
+    cores = [1,2,4,8,16]
+    for i in cores:
+        pool = multiprocessing.Pool(processes=i) 
+        toolbox = getToolbox(selection[0]['args'], mutation[0]['args'], pool)
+        bestValues, means, stds, duration = algorithm(toolbox)
+        durations.append(duration)
+        pool.close()
+    plt.xlabel("Liczba rdzeni")
+    plt.ylabel("Czas")
+    plt.plot(cores, durations)
+    plt.savefig("liczba_rdzeni_a_czas.png')
+    plt.clf()
+
+    
