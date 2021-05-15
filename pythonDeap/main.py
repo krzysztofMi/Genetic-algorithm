@@ -42,16 +42,17 @@ def cx_heuristic(ind1, ind2):
 
 
 # It is in function for purpose to clean toolbox after each algorithm pass.
-def getToolbox(select, mutation, pool):
+def getToolbox(select, mutation, pool=None):
     toolbox = base.Toolbox()
-    if __name__ == "__main__":
+    if __name__ == "__main__" and pool is not None:
         toolbox.register("map", pool.map) 
     toolbox.register('individual',individual, creator.Individual)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("evaluate", fitness_function)
     toolbox.register("select", **select)
     toolbox.register("mate", cx_arithmetic)
-    toolbox.register("mutate", **mutation)
+    # toolbox.register("mutate", **mutation)
+    toolbox.register("mutate", tools.mutGaussian, mu=5, sigma=10, indpb=1)
     return toolbox
 
 
@@ -188,9 +189,8 @@ selection = [
     {"args": {"function": tools.selBest}, "name": "selBest"},
     {"args": {"function": tools.selWorst}, "name": "selWorst"},
     {"args": {"function": tools.selRoulette}, "name": "selRoulette"},
-    {"args": {"function": tools.selTournamentDCD, "tournsize":5}, "name": "selTournament"},
-
     {"args": {"function": tools.selSPEA2}, "name": "selSPEA2"},
+    {"args": {"function": tools.selNSGA2}, "name": "selNSGA2"},
 ]
 
 mutation = [
@@ -200,27 +200,33 @@ mutation = [
     {"args": {"function": tools.mutUniformInt, "low": 10, "up": 10, "indpb": 0.2}, "name": "mutUniformInt"},
 ]
 
-for i in mutation:
-    newToolbox = lambda x: getToolbox(selection[0]['args'], x['args'], pool)
-    toolbox = newToolbox(i)
-    make_plots(i["name"], toolbox)
-    toolbox = newToolbox(i)
-    make_test(i["name"], 50, toolbox)
+toolbox = getToolbox(selection[-2]['args'], mutation[0]['args'], None)
+make_plots(selection[-2]['name'], toolbox)
+toolbox = getToolbox(selection[-2]['args'], mutation[0]['args'], None)
+make_test(selection[-2]['name'], 50, toolbox)
 
-pool = None
-if __name__ == "__main__":
-    durations = []
-    cores = [1,2,4,8,16]
-    for i in cores:
-        pool = multiprocessing.Pool(processes=i) 
-        toolbox = getToolbox(selection[0]['args'], mutation[0]['args'], pool)
-        bestValues, means, stds, duration = algorithm(toolbox)
-        durations.append(duration)
-        pool.close()
-    plt.xlabel("Liczba rdzeni")
-    plt.ylabel("Czas")
-    plt.plot(cores, durations)
-    plt.savefig("liczba_rdzeni_a_czas.png')
-    plt.clf()
+## Iterate over selections
+# for i in selection:
+#     toolbox = getToolbox(i[-1]['args'], mutation[0]['args'], None)
+#     make_plots(i[-1]['name'], toolbox)
+#     toolbox = getToolbox(i[-1]['args'], mutation[0]['args'], None)
+#     make_test(i[-1]['name'], 50, toolbox)
+
+## Multithreading
+# pool = None
+# if __name__ == "__main__":
+#     durations = []
+#     cores = [1,2,4,8,16]
+#     for i in cores:
+#         pool = multiprocessing.Pool(processes=i) 
+#         toolbox = getToolbox(selection[0]['args'], mutation[0]['args'], pool)
+#         bestValues, means, stds, duration = algorithm(toolbox)
+#         durations.append(duration)
+#         pool.close()
+#     plt.xlabel("Liczba rdzeni")
+#     plt.ylabel("Czas")
+#     plt.plot(cores, durations)
+#     plt.savefig("liczba_rdzeni_a_czas.png')
+#     plt.clf()
 
     
