@@ -7,7 +7,7 @@ import random
 import numpy as np
 import time
 import sys
-from pdf_code_formatted import SVCParameters, SVCParametersFitness, load_data, mutationSVC
+from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -45,11 +45,11 @@ def getToolbox(pool=None):
     toolbox = base.Toolbox()
     if __name__ == "__main__" and pool is not None:
         toolbox.register("map", pool.map) 
-    toolbox.register('individual',SVCParameters, numberOfAtributtes, creator.Individual) 
-    toolbox.register("evaluate", SVCParametersFitness,y,df,numberOfAtributtes)
+    toolbox.register('individual',SVCParametersFeatures, numberOfAtributtes, creator.Individual) 
+    toolbox.register("evaluate", SVCParametersFeatureFitness,y,df,numberOfAtributtes)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("select", tools.selTournament, tournsize=5)
-    toolbox.register("mutate", mutationSVC)
+    toolbox.register("mutate", mutationSVC2)
     toolbox.register("mate", tools.cxTwoPoint)
     return toolbox
 

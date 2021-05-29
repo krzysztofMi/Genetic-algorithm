@@ -1,3 +1,15 @@
+"""
+1.Przygotuj implementację genetycznej optymalizacji parametrów i 
+genetycznej selekcji dodatkowo dla pięciu wybranych klasyfikatorów ze 
+sklearn i porównaj wyniki uzyskane na zbiorze danych podanym w zadaniu. 
+
+2.Wykorzystaj powyższe metody(przynajmniej 5 klasyfikatorów) na zbiorze danych, 
+który opracowujesz w ramach projektu z metod odkrywania wiedzy danych. 
+Zaprezentuj różnicę między twoimi dotychczasowymi rezultatami, wynikami 
+osiągniętymi z wykorzystaniem algorytmów genetycznych. Zrównoleglij 
+obliczenia zgodnie z instrukcją z projektu nr 3. 
+"""
+
 import pandas as pd 
 from sklearn import model_selection 
 from sklearn.preprocessing import MinMaxScaler 
@@ -12,16 +24,14 @@ def load_data():
   df.drop('ID',axis=1,inplace=True)
   df.drop('Recording',axis=1,inplace=True)
 
-  numberOfAtributtes=len(df.columns) 
-  print(numberOfAtributtes)
+  # mms = MinMaxScaler() 
+  # df_norm = mms.fit_transform(df) 
+  # clf = SVC() 
+  # scores = model_selection.cross_val_score(clf, df_norm, y, cv=5, scoring='accuracy', n_jobs=-1) 
+  # print(scores.mean())
 
-
-  mms = MinMaxScaler() 
-  df_norm = mms.fit_transform(df) 
-  clf = SVC() 
-  scores = model_selection.cross_val_score(clf, df_norm, y, cv=5, scoring='accuracy', n_jobs=-1) 
-  print(scores.mean())
-  return df, y, len(df.columns)
+  numberOfAttributes=len(df.columns)
+  return df, y, numberOfAttributes
 
 
 if __name__ == "__main__":
@@ -47,8 +57,9 @@ def SVCParameters(numberFeatures,icls):
   return icls(genome)
 
 from sklearn import metrics 
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit, GridSearchCV,KFold,LeaveOneOut,GroupKFold
 def SVCParametersFitness(y,df,numberOfAtributtes,individual):     
+  # Chyba gorsza wersja z pierwszego przykładu
   split=5 
   cv = StratifiedKFold(n_splits=split)     
   mms = MinMaxScaler()   
@@ -67,6 +78,7 @@ def SVCParametersFitness(y,df,numberOfAtributtes,individual):
   return resultSum / split,
 
 def mutationSVC(individual):
+  # Chyba gorsza wersja z pierwszego przykładu
   numberParamer= random.randint(0,len(individual)-1) 
   if numberParamer==0: 
     # kernel 
@@ -92,6 +104,7 @@ def mutationSVC(individual):
 
 
 def SVCParametersFeatures(numberFeatures,icls):
+  # Chyba gorsza wersja z pierwszego przykładu
   genome = list() 
   # kernel 
   listKernel = ["linear","rbf", "poly", "sigmoid"]
@@ -114,7 +127,8 @@ def SVCParametersFeatures(numberFeatures,icls):
 
 def SVCParametersFeatureFitness(y,df,numberOfAtributtes,individual):
   split=5 
-  cv = StratifiedKFold(n_splits=split)
+  # cv = StratifiedKFold(n_splits=split)
+  cv=KFold(n_splits=split)
   listColumnsToDrop=[] #lista cech do usuniecia 
   for i in range(numberOfAtributtes,len(individual)): 
     if individual[i]==0: #gdy atrybut ma zero to usuwamy cechę 
@@ -123,6 +137,8 @@ def SVCParametersFeatureFitness(y,df,numberOfAtributtes,individual):
   mms = MinMaxScaler()
   df_norm = mms.fit_transform(dfSelectedFeatures)
   estimator = SVC(kernel=individual[0],C=individual[1],degree=individual[2],gamma=individual[3],coef0=individual[4],random_state=101)
+  
+  # StratifiedKFold, StratifiedShuffleSplit, GridSearchCV,KFold,LeaveOneOut,GroupKFold
 
   resultSum = 0 
   for train, test in cv.split(df_norm, y):
@@ -135,7 +151,7 @@ def SVCParametersFeatureFitness(y,df,numberOfAtributtes,individual):
   return resultSum / split,
 
 
-def mutationSVC(individual):
+def mutationSVC2(individual):
   numberParamer= random.randint(0,len(individual)-1) 
   if numberParamer==0: 
     # kernel 
@@ -161,16 +177,3 @@ def mutationSVC(individual):
       individual[numberParamer] = 1 
     else:             
       individual[numberParamer] = 0
-
-
-"""
-1.Przygotuj implementację genetycznej optymalizacji parametrów i 
-genetycznej selekcji dodatkowo dla pięciu wybranych klasyfikatorów ze 
-sklearn i porównaj wyniki uzyskane na zbiorze danych podanym w zadaniu. 
-
-2.Wykorzystaj powyższe metody(przynajmniej 5 klasyfikatorów) na zbiorze danych, 
-który opracowujesz w ramach projektu z metod odkrywania wiedzy danych. 
-Zaprezentuj różnicę między twoimi dotychczasowymi rezultatami, wynikami 
-osiągniętymi z wykorzystaniem algorytmów genetycznych. Zrównoleglij 
-obliczenia zgodnie z instrukcją z projektu nr 3. 
-"""
