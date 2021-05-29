@@ -67,6 +67,7 @@ def algorithm(toolbox, printBest = False):
 
     start = time.time()
     while g < numberIteration:
+        print("algorithm iter", g)
         g = g + 1
         # print("-- Generation %i --" % g)
         # Select the next generation individuals
@@ -88,7 +89,7 @@ def algorithm(toolbox, printBest = False):
         for mutant in offspring:
         # mutate an individual with probability MUTPB
             if random.random() < probabilityMutation:
-                toolbox.mutate(mutant)
+                toolbox.mutate(mutant[1:])
                 del mutant.fitness.values
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
