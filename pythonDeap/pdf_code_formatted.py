@@ -9,6 +9,9 @@ Zaprezentuj różnicę między twoimi dotychczasowymi rezultatami, wynikami
 osiągniętymi z wykorzystaniem algorytmów genetycznych. Zrównoleglij 
 obliczenia zgodnie z instrukcją z projektu nr 3. 
 
+# pdf_example_1 = [SVCParameters, SVCParametersFitness, mutationSVC]
+# pdf_example_2 = [SVCParametersFeatures, SVCParametersFeatureFitness, mutationSVC2]
+
 """
 
 import pandas as pd 

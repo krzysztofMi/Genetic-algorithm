@@ -7,7 +7,7 @@ import random
 import numpy as np
 import time
 import sys
-from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2
+from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2, SVCParameters, SVCParametersFitness, mutationSVC
 
 import globals
 min_or_max = None
@@ -24,38 +24,17 @@ probabilityCrossover = globals.probabilityCrossover
 numberIteration=globals.numberIteration
 
 
-# Copy paste we might create our own implementation of this algorithm
-def cx_arithmetic(ind1, ind2):
-    k = 0.25
-    ind1[0] = k * ind1[0] + (1 - k) * ind2[0]
-    ind1[1] = k * ind1[1] + (1 - k) * ind2[1]
-    ind2[0] = (1 - k) * ind1[0] + k * ind2[0]
-    ind2[1] = (1 - k) * ind1[1] + k * ind2[1]
-    return ind1, ind2
-
-
-# Copy paste we might create our own implementation of this algorithm
-def cx_heuristic(ind1, ind2):
-    if ind1[0]>ind1[1] and ind2[0]>ind2[1]:
-        k = random.uniform(0,1)
-        ind1[0] = k*(ind2[0]-ind1[0]) + ind1[0]
-        ind1[1] = k * (ind2[1] - ind1[1]) + ind1[1]
-        return ind1
-    else:
-        return None
-
-
 # It is in function for purpose to clean toolbox after each algorithm pass.
 def getToolbox(pool=None):
     df, y, numberOfAtributtes = load_data()
     toolbox = base.Toolbox()
     if __name__ == "__main__" and pool is not None:
         toolbox.register("map", pool.map) 
-    toolbox.register('individual',SVCParametersFeatures, numberOfAtributtes, creator.Individual) 
-    toolbox.register("evaluate", SVCParametersFeatureFitness,y,df,numberOfAtributtes)
+    toolbox.register('individual',SVCParameters, numberOfAtributtes, creator.Individual) 
+    toolbox.register("evaluate", SVCParametersFitness,y,df,numberOfAtributtes)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("select", tools.selTournament, tournsize=5)
-    toolbox.register("mutate", mutationSVC2)
+    toolbox.register("mutate", mutationSVC)
     toolbox.register("mate", tools.cxTwoPoint)
     return toolbox
 
