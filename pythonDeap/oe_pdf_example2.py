@@ -10,6 +10,11 @@ import sys
 from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2, SVCParameters, SVCParametersFitness, mutationSVC
 
 import globals
+
+
+# pdf_example_1 = [SVCParameters, SVCParametersFitness, mutationSVC]
+# pdf_example_2 = [SVCParametersFeatures, SVCParametersFeatureFitness, mutationSVC2]
+
 min_or_max = None
 if globals.min_or_max == "max":
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))

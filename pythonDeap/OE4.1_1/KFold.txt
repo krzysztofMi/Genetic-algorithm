@@ -1,0 +1,11 @@
+
+KFold
+Najlepsze znalezione rozwiazanie 0.7125000000000001
+Wartosc srednia najlepszych rozwiazan0.6716666666666666
+Odchylenie standardowe najlepszych rozwiazan 0.02449489742783185
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 0
+Najlepsze rozwiazanie znalezione najszybciej 0.6541666666666666
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 0.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 0.0
+sredni czas dzialania algorytmu [ms] 40.7884418964386ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 7.779829831226759ms

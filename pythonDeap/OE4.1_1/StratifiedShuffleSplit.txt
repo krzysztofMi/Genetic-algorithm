@@ -1,0 +1,11 @@
+
+StratifiedShuffleSplit
+Najlepsze znalezione rozwiazanie 0.9333333333333332
+Wartosc srednia najlepszych rozwiazan0.9116666666666667
+Odchylenie standardowe najlepszych rozwiazan 0.020138409955990946
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 45
+Najlepsze rozwiazanie znalezione najszybciej 0.925
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 19.6
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 13.92264342716569
+sredni czas dzialania algorytmu [ms] 96.57588496208191ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 92.64357601097583ms

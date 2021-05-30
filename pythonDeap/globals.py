@@ -1,8 +1,8 @@
 # Selekcje co działają
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit, KFold, ShuffleSplit, RepeatedKFold
-modelSelection = RepeatedKFold
+modelSelection = KFold
 
-filename = "RepeatedKFold"
+filename = "KFold"
 testCount  = 5
 
 sizePopulation = 10
