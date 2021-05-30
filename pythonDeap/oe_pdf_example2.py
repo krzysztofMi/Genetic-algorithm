@@ -12,7 +12,7 @@ from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitnes
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
-sizePopulation = 100
+sizePopulation = 10
 probabilityMutation = 0.1
 probabilityCrossover = 0.8
 numberIteration=100
@@ -175,9 +175,12 @@ def make_test(name, testSize, toolbox):
 
 
 toolbox = getToolbox(None)
-make_plots("To co było w pdf", toolbox)
-# toolbox = getToolbox(None)
-# make_test("To co było w pdf", 50, toolbox)
+make_plots("KFold", toolbox)
+toolbox = getToolbox(None)
+make_test("KFold", 5, toolbox)
 
-
+# StratifiedKFold
+# StratifiedShuffleSplit
+# KFold
+# ShuffleSplit
     

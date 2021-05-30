@@ -8,6 +8,13 @@ który opracowujesz w ramach projektu z metod odkrywania wiedzy danych.
 Zaprezentuj różnicę między twoimi dotychczasowymi rezultatami, wynikami 
 osiągniętymi z wykorzystaniem algorytmów genetycznych. Zrównoleglij 
 obliczenia zgodnie z instrukcją z projektu nr 3. 
+
+# Selekcje co działają
+#   StratifiedKFold
+# StratifiedShuffleSplit
+# KFold
+# ShuffleSplit
+# RepeatedKFold
 """
 
 import pandas as pd 
@@ -125,10 +132,16 @@ def SVCParametersFeatures(numberFeatures,icls):
 
   return icls(genome)
 
+from sklearn.model_selection import RepeatedKFold, GroupShuffleSplit, ShuffleSplit, GridSearchCV
 def SVCParametersFeatureFitness(y,df,numberOfAtributtes,individual):
   split=5 
-  # cv = StratifiedKFold(n_splits=split)
-  cv=KFold(n_splits=split)
+  # Selekcje co działają
+  #   StratifiedKFold
+  # StratifiedShuffleSplit
+  # KFold
+  # ShuffleSplit
+  # RepeatedKFold
+  cv = KFold(n_splits=split)
   listColumnsToDrop=[] #lista cech do usuniecia 
   for i in range(numberOfAtributtes,len(individual)): 
     if individual[i]==0: #gdy atrybut ma zero to usuwamy cechę 
@@ -138,7 +151,8 @@ def SVCParametersFeatureFitness(y,df,numberOfAtributtes,individual):
   df_norm = mms.fit_transform(dfSelectedFeatures)
   estimator = SVC(kernel=individual[0],C=individual[1],degree=individual[2],gamma=individual[3],coef0=individual[4],random_state=101)
   
-  # StratifiedKFold, StratifiedShuffleSplit, GridSearchCV,KFold,LeaveOneOut,GroupKFold
+  # StratifiedKFold, StratifiedShuffleSplit, GridSearchCV,KFold,LeaveOneOut,
+  # GroupKFold
 
   resultSum = 0 
   for train, test in cv.split(df_norm, y):
