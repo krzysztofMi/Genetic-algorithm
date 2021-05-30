@@ -9,13 +9,19 @@ import time
 import sys
 from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-creator.create("Individual", list, fitness=creator.FitnessMax)
+import globals
+min_or_max = None
+if globals.min_or_max == "max":
+    creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+    creator.create("Individual", list, fitness=creator.FitnessMax)
+    min_or_max = np.max
+else:
+    print("Error, min not supported")
 
-sizePopulation = 10
-probabilityMutation = 0.1
-probabilityCrossover = 0.8
-numberIteration=100
+sizePopulation = globals.sizePopulation
+probabilityMutation = globals.probabilityMutation
+probabilityCrossover = globals.probabilityCrossover
+numberIteration=globals.numberIteration
 
 
 # Copy paste we might create our own implementation of this algorithm
@@ -104,7 +110,7 @@ def algorithm(toolbox, printBest = False):
         mean = sum(fits) / length
         sum2 = sum(x * x for x in fits)
         std = abs(sum2 / length - mean ** 2) ** 0.5
-        bestValues.append(min(fits))
+        bestValues.append(min_or_max(fits))
         means.append(mean)
         stds.append(std)
         # print(" Min %s" % min(fits))
@@ -143,26 +149,27 @@ def make_plots(name, toolbox):
 def make_test(name, testSize, toolbox):
     f = open(name + ".txt", "a")
 
-    minims = []
+    maxims = []
     firstGen = []
     times = []
     for i in range(testSize):
         bestValues, _, _, duration = algorithm(toolbox)
-        minims.append(np.min(bestValues))
-        firstGen.append(bestValues.index(np.min(bestValues)))
+        maxims.append(min_or_max(bestValues))
+        firstGen.append(bestValues.index(min_or_max(bestValues)))
         times.append(duration)
         print(f"{name}:{i + 1}/{testSize}")
+    f.write("\n")
     f.write(name)
     f.write("\nNajlepsze znalezione rozwiazanie ")
-    f.write(str(np.min(minims)))
+    f.write(str(min_or_max(maxims)))
     f.write("\nWartosc srednia najlepszych rozwiazan" )
-    f.write(str(np.mean(minims)))
+    f.write(str(np.mean(maxims)))
     f.write("\nOdchylenie standardowe najlepszych rozwiazan " )
-    f.write(str(np.std(minims)))
+    f.write(str(np.std(maxims)))
     f.write("\nGeneracja, w ktorej najszybciej znaleziono optymalne rozwiazanie ")
-    f.write(str(np.min(firstGen)))
+    f.write(str(min_or_max(firstGen)))
     f.write("\nNajlepsze rozwiazanie znalezione najszybciej ")
-    f.write(str(minims[np.argmin(firstGen)]))
+    f.write(str(maxims[np.argmax(firstGen)]))
     f.write("\nsrednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie ")
     f.write(str(np.mean(firstGen)))
     f.write("\nOdchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie ")
@@ -175,12 +182,6 @@ def make_test(name, testSize, toolbox):
 
 
 toolbox = getToolbox(None)
-make_plots("KFold", toolbox)
+make_plots(globals.filename, toolbox)
 toolbox = getToolbox(None)
-make_test("KFold", 5, toolbox)
-
-# StratifiedKFold
-# StratifiedShuffleSplit
-# KFold
-# ShuffleSplit
-    
+make_test(globals.filename, globals.testCount, toolbox)
