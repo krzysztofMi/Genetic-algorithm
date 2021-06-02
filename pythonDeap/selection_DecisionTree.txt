@@ -1,0 +1,11 @@
+
+selection_DecisionTree
+Najlepsze znalezione rozwiazanie: 0.8208333333333334
+Wartosc srednia najlepszych rozwiazan: 0.8125
+Odchylenie standardowe najlepszych rozwiazan: 0.009501461875826175
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie: 46
+Najlepsze rozwiazanie znalezione najszybciej: 0.8208333333333334
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 31.8
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 10.92520022699813
+sredni czas dzialania algorytmu [ms]: 17.739223051071168ms
+Odchylenie standardowe czasow dzialania algorytmu [ms]: 0.9041542839986954ms

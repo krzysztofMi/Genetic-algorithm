@@ -1,0 +1,11 @@
+
+selection_KN
+Najlepsze znalezione rozwiazanie: 0.8083333333333333
+Wartosc srednia najlepszych rozwiazan: 0.7991666666666667
+Odchylenie standardowe najlepszych rozwiazan: 0.00552770798392566
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie: 0
+Najlepsze rozwiazanie znalezione najszybciej: 0.7958333333333333
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 0.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 0.0
+sredni czas dzialania algorytmu [ms]: 173.78361353874206ms
+Odchylenie standardowe czasow dzialania algorytmu [ms]: 5.998893801124149ms

@@ -1,0 +1,11 @@
+
+features_RandomForest
+Najlepsze znalezione rozwiazanie: 0.8291666666666666
+Wartosc srednia najlepszych rozwiazan: 0.8241666666666667
+Odchylenie standardowe najlepszych rozwiazan: 0.004859126579037683
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie: 44
+Najlepsze rozwiazanie znalezione najszybciej: 0.825
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 34.6
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 10.762899237658969
+sredni czas dzialania algorytmu [ms]: 285.72728381156924ms
+Odchylenie standardowe czasow dzialania algorytmu [ms]: 54.004867951019314ms

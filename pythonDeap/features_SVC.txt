@@ -1,0 +1,11 @@
+
+features_SVC
+Najlepsze znalezione rozwiazanie: 0.7791666666666666
+Wartosc srednia najlepszych rozwiazan: 0.7666666666666666
+Odchylenie standardowe najlepszych rozwiazan: 0.007905694150420898
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie: 0
+Najlepsze rozwiazanie znalezione najszybciej: 0.7583333333333333
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 0.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 0.0
+sredni czas dzialania algorytmu [ms]: 57.13880786895752ms
+Odchylenie standardowe czasow dzialania algorytmu [ms]: 3.8102393650425657ms
