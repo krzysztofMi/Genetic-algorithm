@@ -8,16 +8,13 @@ który opracowujesz w ramach projektu z metod odkrywania wiedzy danych.
 Zaprezentuj różnicę między twoimi dotychczasowymi rezultatami, wynikami 
 osiągniętymi z wykorzystaniem algorytmów genetycznych. Zrównoleglij 
 obliczenia zgodnie z instrukcją z projektu nr 3. 
-
-# pdf_example_1 = [SVCParameters, SVCParametersFitness, mutationSVC]
-# pdf_example_2 = [SVCParametersFeatures, SVCParametersFeatureFitness, mutationSVC2]
-
 """
 
 import pandas as pd 
 from sklearn import model_selection 
 from sklearn.preprocessing import MinMaxScaler 
 from sklearn.svm import SVC 
+from sklearn.tree import DecisionTreeClassifier
 import globals
 
 def load_data():
@@ -43,6 +40,216 @@ if __name__ == "__main__":
   df, y, scores = load_data()
 
 import random 
+
+def ParametersFitness(y,df,numberOfAttributes,estimator):
+  split=5 
+  cv = globals.modelSelection(n_splits=split)     
+  mms = MinMaxScaler()   
+  df_norm = mms.fit_transform(df)     
+  resultSum = 0 
+  for train, test in cv.split(df_norm, y):
+    estimator.fit(df_norm[train], y[train])        
+    predicted = estimator.predict(df_norm[test])
+    expected = y[test]        
+    tn, fp, fn, tp = metrics.confusion_matrix(expected, predicted).ravel()
+    result = (tp + tn) / (tp + fp + tn + fn) 
+  #w oparciu o macierze pomyłek https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology/ 
+    resultSum = resultSum + result
+  #zbieramy wyniki z poszczególnych etapów walidacji krzyżowej 
+  return resultSum / split,
+
+def ParametersFeatureFitness(y,df,numberOfAtributtes,individual,estimator):
+  split=5 
+  cv = globals.modelSelection(n_splits=split)
+  listColumnsToDrop=[] #lista cech do usuniecia 
+  for i in range(numberOfAtributtes,len(individual)): 
+    if individual[i]==0: #gdy atrybut ma zero to usuwamy cechę 
+      listColumnsToDrop.append(i-numberOfAtributtes)
+  dfSelectedFeatures=df.drop(df.columns[listColumnsToDrop], axis=1, inplace=False)
+  mms = MinMaxScaler()
+  df_norm = mms.fit_transform(dfSelectedFeatures)
+  
+  resultSum = 0 
+  for train, test in cv.split(df_norm, y):
+    estimator.fit(df_norm[train], y[train])
+    predicted = estimator.predict(df_norm[test])
+    expected = y[test]
+    tn, fp, fn, tp = metrics.confusion_matrix(expected, predicted).ravel()
+    result = (tp + tn) / (tp + fp + tn + fn) #w oparciu o macierze pomyłek https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology/ 
+    resultSum = resultSum + result #zbieramy wyniki z poszczególnych etapów walidacji krzyżowej 
+  return resultSum / split,
+
+
+### KNN Classifier
+def _KNParameters():
+  p = [1, random.uniform(1.001, 1.99), 2]
+  genome = [
+    random.randint(1, 10), # n_neighbors
+    random.randint(10, 50),#leaf_size
+    p[random.randint(0,2)],#p
+  ]
+  return genome
+
+def KNParameters(numberFeatures, icls):
+  return icls(_KNParameters())
+
+def KNParametersFeatures(numberFeatures, icls):
+  genome = _KNParameters()
+  for i in range(0,numberFeatures):
+    genome.append(random.randint(0, 1)) 
+  return icls(genome)
+
+from sklearn.neighbors import KNeighborsClassifier
+def KNParametersFitness(y,df,numberOfAttributes,individual):
+  est = KNeighborsClassifier(n_neighbors=individual[0], leaf_size=individual[1], p=individual[2])
+  return ParametersFitness(y,df,numberOfAttributes,est)
+
+def KNParametersFeaturesFitness(y,df,numberOfAttributes,individual):
+  est = KNeighborsClassifier(n_neighbors=individual[0], leaf_size=individual[1], p=individual[2])
+  return ParametersFeatureFitness(y,df,numberOfAttributes,individual,est)
+
+def KNMutation(individual):
+  numberParamer= random.randint(0,len(individual)-1) 
+  if numberParamer==0: 
+    individual[0] == random.randint(1, 10)
+  elif numberParamer==1:  
+    individual[1] = random.randint(10, 50)
+  elif numberParamer == 2: 
+    p = [1, random.uniform(1.001, 1.99), 2]
+    individual[2] = p[random.randint(0,2)]
+  else: #genetyczna selekcja cech 
+    if individual[numberParamer] == 0:
+      individual[numberParamer] = 1 
+    else:             
+      individual[numberParamer] = 0
+
+### RandomForrest Classifier
+def _RandomForestParameters():
+  features = ["auto", "sqrt", "log2"]
+  genome = [
+  # (max_depth=5, n_estimators=10, max_features=1),
+    random.randint(1, 20),
+    random.randint(1,20),
+    features[random.randint(0,len(features)-1)]
+  ]
+  return genome
+
+def RandomForestParameters(numberFeatures, icls):
+  return icls(_RandomForestParameters())
+
+def RandomForestParametersFeatures(numberFeatures, icls):
+  genome = _RandomForestParameters()
+  for i in range(0,numberFeatures):
+    genome.append(random.randint(0, 1)) 
+  return icls(genome)
+
+from sklearn.ensemble import RandomForestClassifier
+def RandomForestFitness(y,df,numberOfAttributes,individual):
+  est = RandomForestClassifier(max_depth=individual[0], n_estimators=individual[1], max_features=individual[2])
+  return ParametersFitness(y,df,numberOfAttributes,est)
+
+def RandomForestParametersFeatureFitness(y,df,numberOfAttributes,individual):
+  est = RandomForestClassifier(max_depth=individual[0], n_estimators=individual[1], max_features=individual[2])
+  return ParametersFeatureFitness(y,df,numberOfAttributes,individual,est)
+
+def RandomForestMutation(individual):
+  parameters = _RandomForestParameters()
+  index = random.randint(0, len(individual)-1)
+  if index < len(parameters) - 1:
+    individual[index] = parameters[index]
+  else:
+    if individual[index] == 0:
+      individual[index] = 1 
+    else:             
+      individual[index] = 0
+
+  
+### DecisionTreeClassifier(max_depth=5) 
+def _DecisionTreeParameters():
+  splitter = ["best", "random"]
+  max_features = ["auto", "sqrt", "log2"]
+  genome = [
+    splitter[random.randint(0,1)], 
+    random.randint(1,5), # maxdepth,
+    max_features[random.randint(0,2)],
+  ]
+  return genome
+
+def DecisionTreeParameters(numberFeatures,icls):
+  return icls(_DecisionTreeParameters())
+
+def DecisionTreeParametersFeatures(numberFeatures, icls):
+  genome = _DecisionTreeParameters()
+  for i in range(0,numberFeatures):
+    genome.append(random.randint(0, 1)) 
+  return icls(genome)
+
+def DecisionTreeFitness(y,df,numberOfAttributes,individual):
+  est = DecisionTreeClassifier(splitter=individual[0], max_depth=individual[1], max_features=individual[2])
+  return ParametersFitness(y,df,numberOfAttributes,est)
+
+def DecisionTreeParametersFeatureFitness(y,df,numberOfAttributes,individual):
+  est = DecisionTreeClassifier(splitter=individual[0], max_depth=individual[1], max_features=individual[2])
+  return ParametersFeatureFitness(y,df,numberOfAttributes,individual,est)
+
+def DecisionTreeMutation(individual):
+  parameters = _DecisionTreeParameters()
+  index = random.randint(0, len(individual)-1)
+  if index < len(parameters) - 1:
+    individual[index] = parameters[index]
+  else:
+    if individual[index] == 0:
+      individual[index] = 1 
+    else:             
+      individual[index] = 0
+
+### MultiLayer Perceptron Classifier
+def _MLPParameters():
+  activation = ["identity", "logistic", "tanh", "relu"]
+  solver = ["lbfgs", "sgd", "adam"]
+  learning_rate = ["constant", "invscaling", "adaptive"]
+  genome = [
+    activation[random.randint(0,len(activation)-1)],
+    solver[random.randint(0,len(solver)-1)],
+    random.uniform(0.0001, 1), #alpha
+    learning_rate[random.randint(0,len(learning_rate)-1)],
+    random.uniform(0.0001, 0.1), #learn_rate_init
+    bool(random.randint(0,1)) #shuffle
+  ]
+  print(genome)
+  return genome
+
+def MLPParameters(n,icls):
+  return icls(_MLPParameters())
+
+def MLPParametersFeatures(numberFeatures, icls):
+  genome = _MLPParameters()
+  for i in range(0,numberFeatures):
+    genome.append(random.randint(0, 1)) 
+  return icls(genome)
+
+from sklearn.neural_network import MLPClassifier
+def MLPFitness(y,df,numberOfAttributes,individual):
+  est = MLPClassifier(activation=individual[0], solver=individual[1], alpha=individual[2], learning_rate=individual[3], learning_rate_init=individual[4], shuffle=individual[5])
+  return ParametersFitness(y,df,numberOfAttributes,est)
+
+def MLPParametersFeatureFitness(y,df,numberOfAttributes,individual):
+  est = MLPClassifier(activation=individual[0], solver=individual[1], alpha=individual[2], learning_rate=individual[3], learning_rate_init=individual[4], shuffle=individual[5])
+  return ParametersFeatureFitness(y,df,numberOfAttributes,individual,est)
+
+def MLPMutation(individual):
+  parameters = _MLPParameters()
+  index = random.randint(0, len(individual)-1)
+  if index < len(parameters) - 1:
+    individual[index] = parameters[index]
+  else:
+    if individual[index] == 0:
+      individual[index] = 1 
+    else:             
+      individual[index] = 0
+
+### SVC
+
 def SVCParameters(numberFeatures,icls):
   genome = list() 
   #kernel 
@@ -59,16 +266,17 @@ def SVCParameters(numberFeatures,icls):
   # coeff 
   coeff = random.uniform(0.01, 10)     
   genome.append(coeff) 
+
+
   return icls(genome)
 
 from sklearn import metrics 
 def SVCParametersFitness(y,df,numberOfAtributtes,individual):     
-  # Chyba gorsza wersja z pierwszego przykładu
+  estimator = SVC(kernel=individual[0],C=individual[1],degree=individual[2],gamma=individual[3],coef0=individual[4],random_state=101)     
   split=5 
   cv = globals.modelSelection(n_splits=split)     
   mms = MinMaxScaler()   
   df_norm = mms.fit_transform(df)     
-  estimator = SVC(kernel=individual[0],C=individual[1],degree=individual[2],gamma=individual[3],coef0=individual[4],random_state=101)     
   resultSum = 0 
   for train, test in cv.split(df_norm, y):
     estimator.fit(df_norm[train], y[train])        
@@ -82,7 +290,6 @@ def SVCParametersFitness(y,df,numberOfAtributtes,individual):
   return resultSum / split,
 
 def mutationSVC(individual):
-  # Chyba gorsza wersja z pierwszego przykładu
   numberParamer= random.randint(0,len(individual)-1) 
   if numberParamer==0: 
     # kernel 
@@ -108,7 +315,6 @@ def mutationSVC(individual):
 
 
 def SVCParametersFeatures(numberFeatures,icls):
-  # Chyba gorsza wersja z pierwszego przykładu
   genome = list() 
   # kernel 
   listKernel = ["linear","rbf", "poly", "sigmoid"]
@@ -129,7 +335,6 @@ def SVCParametersFeatures(numberFeatures,icls):
 
   return icls(genome)
 
-from sklearn.model_selection import RepeatedKFold, GroupShuffleSplit, ShuffleSplit, GridSearchCV
 def SVCParametersFeatureFitness(y,df,numberOfAtributtes,individual):
   split=5 
   cv = globals.modelSelection(n_splits=split)
@@ -179,3 +384,61 @@ def mutationSVC2(individual):
       individual[numberParamer] = 1 
     else:             
       individual[numberParamer] = 0
+
+
+dispatch = {
+  "features": {
+    "KN": {
+      "params": KNParametersFeatures,
+      "fitness": KNParametersFeaturesFitness,
+      "mutation": KNMutation
+    },
+    "SVC": {
+      "params": SVCParametersFeatures,
+      "fitness": SVCParametersFeatureFitness,
+      "mutation": mutationSVC2
+    },
+    "RandomForest": {
+      "params": RandomForestParametersFeatures,
+      "fitness": RandomForestParametersFeatureFitness,
+      "mutation": RandomForestMutation
+    },
+    "DecisionTree": {
+      "params": DecisionTreeParametersFeatures,
+      "fitness": DecisionTreeParametersFeatureFitness,
+      "mutation": DecisionTreeMutation
+    },
+    "MLP": {
+      "params": MLPParametersFeatures,
+      "fitness": MLPParametersFeatureFitness,
+      "mutation": MLPMutation
+    },
+  },
+  "selection": {
+    "KN": {
+      "params": KNParameters,
+      "fitness": KNParametersFitness,
+      "mutation": KNMutation
+    },
+    "SVC": {
+      "params": SVCParameters,
+      "fitness": SVCParametersFitness,
+      "mutation": mutationSVC
+    },
+    "RandomForest": {
+      "params": RandomForestParameters,
+      "fitness": RandomForestFitness,
+      "mutation": RandomForestMutation
+    },
+    "DecisionTree": {
+      "params": DecisionTreeParameters,
+      "fitness": DecisionTreeFitness,
+      "mutation": DecisionTreeMutation
+    },
+    "MLP": {
+      "params": MLPParameters,
+      "fitness": MLPFitness,
+      "mutation": MLPMutation
+    },
+  },
+}

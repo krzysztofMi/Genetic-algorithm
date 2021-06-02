@@ -7,13 +7,9 @@ import random
 import numpy as np
 import time
 import sys
-from pdf_code_formatted import SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2, SVCParameters, SVCParametersFitness, mutationSVC
+from pdf_code_formatted import dispatch, SVCParametersFeatures, SVCParametersFeatureFitness, load_data, mutationSVC2, SVCParameters, SVCParametersFitness, mutationSVC
 
 import globals
-
-
-# pdf_example_1 = [SVCParameters, SVCParametersFitness, mutationSVC]
-# pdf_example_2 = [SVCParametersFeatures, SVCParametersFeatureFitness, mutationSVC2]
 
 min_or_max = None
 if globals.min_or_max == "max":
@@ -30,16 +26,16 @@ numberIteration=globals.numberIteration
 
 
 # It is in function for purpose to clean toolbox after each algorithm pass.
-def getToolbox(pool=None):
+def getToolbox(individual, evaluate, mutate, pool=None):
     df, y, numberOfAtributtes = load_data()
     toolbox = base.Toolbox()
     if __name__ == "__main__" and pool is not None:
         toolbox.register("map", pool.map) 
-    toolbox.register('individual',SVCParameters, numberOfAtributtes, creator.Individual) 
-    toolbox.register("evaluate", SVCParametersFitness,y,df,numberOfAtributtes)
+    toolbox.register('individual',individual, numberOfAtributtes, creator.Individual) 
+    toolbox.register("evaluate", evaluate,y,df,numberOfAtributtes)
+    toolbox.register("mutate", mutate)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("select", tools.selTournament, tournsize=5)
-    toolbox.register("mutate", mutationSVC)
     toolbox.register("mate", tools.cxTwoPoint)
     return toolbox
 
@@ -144,28 +140,41 @@ def make_test(name, testSize, toolbox):
         print(f"{name}:{i + 1}/{testSize}")
     f.write("\n")
     f.write(name)
-    f.write("\nNajlepsze znalezione rozwiazanie ")
+    f.write("\nNajlepsze znalezione rozwiazanie: ")
     f.write(str(min_or_max(maxims)))
-    f.write("\nWartosc srednia najlepszych rozwiazan" )
+    f.write("\nWartosc srednia najlepszych rozwiazan: " )
     f.write(str(np.mean(maxims)))
-    f.write("\nOdchylenie standardowe najlepszych rozwiazan " )
+    f.write("\nOdchylenie standardowe najlepszych rozwiazan: " )
     f.write(str(np.std(maxims)))
-    f.write("\nGeneracja, w ktorej najszybciej znaleziono optymalne rozwiazanie ")
+    f.write("\nGeneracja, w ktorej najszybciej znaleziono optymalne rozwiazanie: ")
     f.write(str(min_or_max(firstGen)))
-    f.write("\nNajlepsze rozwiazanie znalezione najszybciej ")
+    f.write("\nNajlepsze rozwiazanie znalezione najszybciej: ")
     f.write(str(maxims[np.argmax(firstGen)]))
-    f.write("\nsrednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie ")
+    f.write("\nsrednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: ")
     f.write(str(np.mean(firstGen)))
-    f.write("\nOdchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie ")
+    f.write("\nOdchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: ")
     f.write(str(np.std(firstGen)))
-    f.write("\nsredni czas dzialania algorytmu [ms] ")
+    f.write("\nsredni czas dzialania algorytmu [ms]: ")
     f.write(str(np.mean(times)) + "ms")
-    f.write("\nOdchylenie standardowe czasow dzialania algorytmu [ms] ")
+    f.write("\nOdchylenie standardowe czasow dzialania algorytmu [ms]: ")
     f.write(str(np.std(times)) + "ms")
+    f.write("\n")
     f.close()
 
 
-toolbox = getToolbox(None)
-make_plots(globals.filename, toolbox)
-toolbox = getToolbox(None)
-make_test(globals.filename, globals.testCount, toolbox)
+
+
+for branch in dispatch:
+    if branch == "features":
+        continue
+    for classifier in dispatch[branch]:
+        params = dispatch[branch][classifier]['params']
+        fitness = dispatch[branch][classifier]['fitness']
+        mutation = dispatch[branch][classifier]['mutation']
+        name = branch + "_" + classifier
+        print(name)
+
+        toolbox = getToolbox(params, fitness, mutation)
+        make_plots(name, toolbox)
+        toolbox = getToolbox(params, fitness, mutation)
+        make_test(name, globals.testCount, toolbox)
