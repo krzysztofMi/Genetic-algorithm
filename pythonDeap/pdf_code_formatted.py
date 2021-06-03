@@ -203,42 +203,37 @@ def DecisionTreeMutation(individual):
     else:             
       individual[index] = 0
 
-### MultiLayer Perceptron Classifier
-def _MLPParameters():
-  activation = ["identity", "logistic", "tanh", "relu"]
-  solver = ["lbfgs", "sgd", "adam"]
-  learning_rate = ["constant", "invscaling", "adaptive"]
+### GaussianProcessClassifier
+def _GPCParameters():
+  multi_class = ["one_vs_rest", "one_vs_one"]
+  warm_start = [False, True]
   genome = [
-    activation[random.randint(0,len(activation)-1)],
-    solver[random.randint(0,len(solver)-1)],
-    random.uniform(0.0001, 1), #alpha
-    learning_rate[random.randint(0,len(learning_rate)-1)],
-    random.uniform(0.0001, 0.1), #learn_rate_init
-    bool(random.randint(0,1)) #shuffle
+    multi_class[random.randint(0,len(multi_class) - 1)], 
+    warm_start[random.randint(0,len(warm_start) - 1)], 
+    random.randint(20, 200), # max_iter_predict
   ]
-  print(genome)
   return genome
 
-def MLPParameters(n,icls):
-  return icls(_MLPParameters())
+def GPCParameters(n,icls):
+  return icls(_GPCParameters())
 
-def MLPParametersFeatures(numberFeatures, icls):
-  genome = _MLPParameters()
+def GPCParametersFeatures(numberFeatures, icls):
+  genome = _GPCParameters()
   for i in range(0,numberFeatures):
     genome.append(random.randint(0, 1)) 
   return icls(genome)
 
-from sklearn.neural_network import MLPClassifier
-def MLPFitness(y,df,numberOfAttributes,individual):
-  est = MLPClassifier(activation=individual[0], solver=individual[1], alpha=individual[2], learning_rate=individual[3], learning_rate_init=individual[4], shuffle=individual[5])
+from sklearn.gaussian_process import GaussianProcessClassifier
+def GPCFitness(y,df,numberOfAttributes,individual):
+  est = GaussianProcessClassifier(multi_class=individual[0], warm_start=individual[1], max_iter_predict=individual[2])
   return ParametersFitness(y,df,numberOfAttributes,est)
 
-def MLPParametersFeatureFitness(y,df,numberOfAttributes,individual):
-  est = MLPClassifier(activation=individual[0], solver=individual[1], alpha=individual[2], learning_rate=individual[3], learning_rate_init=individual[4], shuffle=individual[5])
+def GPCParametersFeatureFitness(y,df,numberOfAttributes,individual):
+  est = GaussianProcessClassifier(multi_class=individual[0], warm_start=individual[1], max_iter_predict=individual[2])
   return ParametersFeatureFitness(y,df,numberOfAttributes,individual,est)
 
-def MLPMutation(individual):
-  parameters = _MLPParameters()
+def GPCMutation(individual):
+  parameters = _GPCParameters()
   index = random.randint(0, len(individual)-1)
   if index < len(parameters) - 1:
     individual[index] = parameters[index]
@@ -249,7 +244,6 @@ def MLPMutation(individual):
       individual[index] = 0
 
 ### SVC
-
 def SVCParameters(numberFeatures,icls):
   genome = list() 
   #kernel 
@@ -408,10 +402,10 @@ dispatch = {
       "fitness": DecisionTreeParametersFeatureFitness,
       "mutation": DecisionTreeMutation
     },
-    "MLP": {
-      "params": MLPParametersFeatures,
-      "fitness": MLPParametersFeatureFitness,
-      "mutation": MLPMutation
+    "GPC": {
+      "params": GPCParametersFeatures,
+      "fitness": GPCParametersFeatureFitness,
+      "mutation": GPCMutation
     },
   },
   "selection": {
@@ -435,10 +429,10 @@ dispatch = {
       "fitness": DecisionTreeFitness,
       "mutation": DecisionTreeMutation
     },
-    "MLP": {
-      "params": MLPParameters,
-      "fitness": MLPFitness,
-      "mutation": MLPMutation
+    "GPC": {
+      "params": GPCParameters,
+      "fitness": GPCFitness,
+      "mutation": GPCMutation
     },
   },
 }

@@ -1,0 +1,54 @@
+KFold
+Najlepsze znalezione rozwiazanie 0.6791666666666667
+Wartosc srednia najlepszych rozwiazan0.6633333333333333
+Odchylenie standardowe najlepszych rozwiazan 0.008079466429027203
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 3
+Najlepsze rozwiazanie znalezione najszybciej 0.6791666666666667
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 0.8
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 1.1661903789690602
+sredni czas dzialania algorytmu [ms] 41.590810203552245ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 8.806699855492846ms
+
+RepeatedKFold
+Najlepsze znalezione rozwiazanie 8.608333333333333
+Wartosc srednia najlepszych rozwiazan8.434999999999999
+Odchylenie standardowe najlepszych rozwiazan 0.13198800450545997
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 49
+Najlepsze rozwiazanie znalezione najszybciej 8.608333333333333
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 47.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 3.0983866769659336
+sredni czas dzialania algorytmu [ms] 402.11004028320315ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 16.41435830787497ms
+
+ShuffleSplit
+Najlepsze znalezione rozwiazanie 0.9583333333333333
+Wartosc srednia najlepszych rozwiazan0.925
+Odchylenie standardowe najlepszych rozwiazan 0.02934469476943166
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 39
+Najlepsze rozwiazanie znalezione najszybciej 0.9583333333333333
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 22.8
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 12.82809416865966
+sredni czas dzialania algorytmu [ms] 82.370357131958ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 66.51826916528547ms
+
+StratifiedKFold
+Najlepsze znalezione rozwiazanie 0.7708333333333333
+Wartosc srednia najlepszych rozwiazan0.7666666666666666
+Odchylenie standardowe najlepszych rozwiazan 0.006454972243679006
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 0
+Najlepsze rozwiazanie znalezione najszybciej 0.7708333333333333
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 0.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 0.0
+sredni czas dzialania algorytmu [ms] 40.28943190574646ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 8.784101462927207ms
+
+StratifiedShuffleSplit
+Najlepsze znalezione rozwiazanie 0.95
+Wartosc srednia najlepszych rozwiazan0.9350000000000002
+Odchylenie standardowe najlepszych rozwiazan 0.021984843263788214
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie 34
+Najlepsze rozwiazanie znalezione najszybciej 0.95
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 28.4
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie 4.758150901348127
+sredni czas dzialania algorytmu [ms] 48.645238924026486ms
+Odchylenie standardowe czasow dzialania algorytmu [ms] 4.193253585905972ms

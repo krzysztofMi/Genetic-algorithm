@@ -165,16 +165,15 @@ def make_test(name, testSize, toolbox):
 
 
 for branch in dispatch:
-    if branch == "features":
-        continue
     for classifier in dispatch[branch]:
-        params = dispatch[branch][classifier]['params']
-        fitness = dispatch[branch][classifier]['fitness']
-        mutation = dispatch[branch][classifier]['mutation']
-        name = branch + "_" + classifier
-        print(name)
+        if classifier == "GPC":
+            params = dispatch[branch][classifier]['params']
+            fitness = dispatch[branch][classifier]['fitness']
+            mutation = dispatch[branch][classifier]['mutation']
+            name = branch + "_" + classifier
+            print(name)
 
-        toolbox = getToolbox(params, fitness, mutation)
-        make_plots(name, toolbox)
-        toolbox = getToolbox(params, fitness, mutation)
-        make_test(name, globals.testCount, toolbox)
+            toolbox = getToolbox(params, fitness, mutation)
+            make_plots(name, toolbox)
+            toolbox = getToolbox(params, fitness, mutation)
+            make_test(name, globals.testCount, toolbox)

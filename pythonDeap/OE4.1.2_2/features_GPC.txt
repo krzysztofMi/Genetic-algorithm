@@ -1,0 +1,11 @@
+
+features_GPC
+Najlepsze znalezione rozwiazanie: 0.8166666666666668
+Wartosc srednia najlepszych rozwiazan: 0.8166666666666668
+Odchylenie standardowe najlepszych rozwiazan: 0.0
+Generacja, w ktorej najszybciej znaleziono optymalne rozwiazanie: 0
+Najlepsze rozwiazanie znalezione najszybciej: 0.8166666666666668
+srednia generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 0.0
+Odchylenie standardowe generacji, w ktorych po raz pierwszy znaleziono najlepsze rozwiazanie: 0.0
+sredni czas dzialania algorytmu [ms]: 117.71988320350647ms
+Odchylenie standardowe czasow dzialania algorytmu [ms]: 14.987478126165955ms
